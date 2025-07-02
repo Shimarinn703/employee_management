@@ -2,13 +2,11 @@ package com.jhc.employee_management.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+
 import java.util.Date;
 
-
 @Data
-@TableName("user_login_info")
 public class UserLoginInfo {
     @TableId(type = IdType.AUTO)
     private Long id;
