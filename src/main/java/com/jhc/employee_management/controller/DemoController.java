@@ -23,8 +23,8 @@ public class DemoController {
     @RequestMapping("/insert")
     public Integer insertUser() {
         UserLoginInfo userLoginInfo = new UserLoginInfo();
-        userLoginInfo.setEmployeeId("12345678901234567890");
-        userLoginInfo.setUsername("12345678901234567890");
+        userLoginInfo.setEmployeeId("12345678901234567291");
+        userLoginInfo.setUsername("12345678901234567291");
         userLoginInfo.setPassword("123456");
         return demoService.insertInfo(userLoginInfo);
     }
