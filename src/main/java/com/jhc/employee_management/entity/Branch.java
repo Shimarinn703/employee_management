@@ -9,41 +9,41 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * ログイン情報
- * @TableName user_login_info
+ * 分公司テーブル
+ * @TableName branch
  */
-@TableName(value ="user_login_info")
+@TableName(value ="branch")
 @Data
-public class UserLoginInfo implements Serializable {
+public class Branch implements Serializable {
     /**
-     * 順番
+     * 支店ID
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
-     * 社員コード
+     * 支店名
      */
-    @TableField(value = "employee_id")
-    private String employeeId;
+    @TableField(value = "name")
+    private String name;
 
     /**
-     * ユーザー名
+     * 都市名
      */
-    @TableField(value = "username")
-    private String username;
+    @TableField(value = "city")
+    private String city;
 
     /**
-     * パスワード
+     * 都市コード
      */
-    @TableField(value = "password")
-    private String password;
+    @TableField(value = "city_code")
+    private String cityCode;
 
     /**
-     * ログイン日時
+     * 住所
      */
-    @TableField(value = "login_time")
-    private Date loginTime;
+    @TableField(value = "address")
+    private String address;
 
     /**
      * 作成日時
@@ -89,12 +89,12 @@ public class UserLoginInfo implements Serializable {
         if (getClass() != that.getClass()) {
             return false;
         }
-        UserLoginInfo other = (UserLoginInfo) that;
+        Branch other = (Branch) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getEmployeeId() == null ? other.getEmployeeId() == null : this.getEmployeeId().equals(other.getEmployeeId()))
-            && (this.getUsername() == null ? other.getUsername() == null : this.getUsername().equals(other.getUsername()))
-            && (this.getPassword() == null ? other.getPassword() == null : this.getPassword().equals(other.getPassword()))
-            && (this.getLoginTime() == null ? other.getLoginTime() == null : this.getLoginTime().equals(other.getLoginTime()))
+            && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
+            && (this.getCity() == null ? other.getCity() == null : this.getCity().equals(other.getCity()))
+            && (this.getCityCode() == null ? other.getCityCode() == null : this.getCityCode().equals(other.getCityCode()))
+            && (this.getAddress() == null ? other.getAddress() == null : this.getAddress().equals(other.getAddress()))
             && (this.getCreatedAt() == null ? other.getCreatedAt() == null : this.getCreatedAt().equals(other.getCreatedAt()))
             && (this.getUpdatedAt() == null ? other.getUpdatedAt() == null : this.getUpdatedAt().equals(other.getUpdatedAt()))
             && (this.getAdd1() == null ? other.getAdd1() == null : this.getAdd1().equals(other.getAdd1()))
@@ -107,10 +107,10 @@ public class UserLoginInfo implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
-        result = prime * result + ((getEmployeeId() == null) ? 0 : getEmployeeId().hashCode());
-        result = prime * result + ((getUsername() == null) ? 0 : getUsername().hashCode());
-        result = prime * result + ((getPassword() == null) ? 0 : getPassword().hashCode());
-        result = prime * result + ((getLoginTime() == null) ? 0 : getLoginTime().hashCode());
+        result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
+        result = prime * result + ((getCity() == null) ? 0 : getCity().hashCode());
+        result = prime * result + ((getCityCode() == null) ? 0 : getCityCode().hashCode());
+        result = prime * result + ((getAddress() == null) ? 0 : getAddress().hashCode());
         result = prime * result + ((getCreatedAt() == null) ? 0 : getCreatedAt().hashCode());
         result = prime * result + ((getUpdatedAt() == null) ? 0 : getUpdatedAt().hashCode());
         result = prime * result + ((getAdd1() == null) ? 0 : getAdd1().hashCode());
@@ -126,10 +126,10 @@ public class UserLoginInfo implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
-        sb.append(", employeeId=").append(employeeId);
-        sb.append(", username=").append(username);
-        sb.append(", password=").append(password);
-        sb.append(", loginTime=").append(loginTime);
+        sb.append(", name=").append(name);
+        sb.append(", city=").append(city);
+        sb.append(", cityCode=").append(cityCode);
+        sb.append(", address=").append(address);
         sb.append(", createdAt=").append(createdAt);
         sb.append(", updatedAt=").append(updatedAt);
         sb.append(", add1=").append(add1);

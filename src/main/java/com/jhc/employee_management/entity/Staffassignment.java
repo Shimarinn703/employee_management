@@ -9,12 +9,12 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * ログイン情報
- * @TableName user_login_info
+ * 現場情報
+ * @TableName staffassignment
  */
-@TableName(value ="user_login_info")
+@TableName(value ="staffassignment")
 @Data
-public class UserLoginInfo implements Serializable {
+public class Staffassignment implements Serializable {
     /**
      * 順番
      */
@@ -25,25 +25,19 @@ public class UserLoginInfo implements Serializable {
      * 社員コード
      */
     @TableField(value = "employee_id")
-    private String employeeId;
+    private Long employeeId;
 
     /**
-     * ユーザー名
+     * 現在の現場
      */
-    @TableField(value = "username")
-    private String username;
+    @TableField(value = "onsiteLocation_id")
+    private Long onsitelocationId;
 
     /**
-     * パスワード
+     * 過去の現場
      */
-    @TableField(value = "password")
-    private String password;
-
-    /**
-     * ログイン日時
-     */
-    @TableField(value = "login_time")
-    private Date loginTime;
+    @TableField(value = "previous_sites")
+    private String previousSites;
 
     /**
      * 作成日時
@@ -89,12 +83,11 @@ public class UserLoginInfo implements Serializable {
         if (getClass() != that.getClass()) {
             return false;
         }
-        UserLoginInfo other = (UserLoginInfo) that;
+        Staffassignment other = (Staffassignment) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
             && (this.getEmployeeId() == null ? other.getEmployeeId() == null : this.getEmployeeId().equals(other.getEmployeeId()))
-            && (this.getUsername() == null ? other.getUsername() == null : this.getUsername().equals(other.getUsername()))
-            && (this.getPassword() == null ? other.getPassword() == null : this.getPassword().equals(other.getPassword()))
-            && (this.getLoginTime() == null ? other.getLoginTime() == null : this.getLoginTime().equals(other.getLoginTime()))
+            && (this.getOnsitelocationId() == null ? other.getOnsitelocationId() == null : this.getOnsitelocationId().equals(other.getOnsitelocationId()))
+            && (this.getPreviousSites() == null ? other.getPreviousSites() == null : this.getPreviousSites().equals(other.getPreviousSites()))
             && (this.getCreatedAt() == null ? other.getCreatedAt() == null : this.getCreatedAt().equals(other.getCreatedAt()))
             && (this.getUpdatedAt() == null ? other.getUpdatedAt() == null : this.getUpdatedAt().equals(other.getUpdatedAt()))
             && (this.getAdd1() == null ? other.getAdd1() == null : this.getAdd1().equals(other.getAdd1()))
@@ -108,9 +101,8 @@ public class UserLoginInfo implements Serializable {
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((getEmployeeId() == null) ? 0 : getEmployeeId().hashCode());
-        result = prime * result + ((getUsername() == null) ? 0 : getUsername().hashCode());
-        result = prime * result + ((getPassword() == null) ? 0 : getPassword().hashCode());
-        result = prime * result + ((getLoginTime() == null) ? 0 : getLoginTime().hashCode());
+        result = prime * result + ((getOnsitelocationId() == null) ? 0 : getOnsitelocationId().hashCode());
+        result = prime * result + ((getPreviousSites() == null) ? 0 : getPreviousSites().hashCode());
         result = prime * result + ((getCreatedAt() == null) ? 0 : getCreatedAt().hashCode());
         result = prime * result + ((getUpdatedAt() == null) ? 0 : getUpdatedAt().hashCode());
         result = prime * result + ((getAdd1() == null) ? 0 : getAdd1().hashCode());
@@ -127,9 +119,8 @@ public class UserLoginInfo implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", employeeId=").append(employeeId);
-        sb.append(", username=").append(username);
-        sb.append(", password=").append(password);
-        sb.append(", loginTime=").append(loginTime);
+        sb.append(", onsitelocationId=").append(onsitelocationId);
+        sb.append(", previousSites=").append(previousSites);
         sb.append(", createdAt=").append(createdAt);
         sb.append(", updatedAt=").append(updatedAt);
         sb.append(", add1=").append(add1);

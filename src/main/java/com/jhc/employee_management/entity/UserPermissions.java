@@ -9,14 +9,14 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * ログイン情報
- * @TableName user_login_info
+ * ユーザー権限テーブル
+ * @TableName user_permissions
  */
-@TableName(value ="user_login_info")
+@TableName(value ="user_permissions")
 @Data
-public class UserLoginInfo implements Serializable {
+public class UserPermissions implements Serializable {
     /**
-     * 順番
+     * 順番ID
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
@@ -28,28 +28,10 @@ public class UserLoginInfo implements Serializable {
     private String employeeId;
 
     /**
-     * ユーザー名
+     * 権限レベル（1=一般ユーザー、2=管理者）
      */
-    @TableField(value = "username")
-    private String username;
-
-    /**
-     * パスワード
-     */
-    @TableField(value = "password")
-    private String password;
-
-    /**
-     * ログイン日時
-     */
-    @TableField(value = "login_time")
-    private Date loginTime;
-
-    /**
-     * 作成日時
-     */
-    @TableField(value = "created_at")
-    private Date createdAt;
+    @TableField(value = "permission_level")
+    private Integer permissionLevel;
 
     /**
      * 更新日時
@@ -89,13 +71,10 @@ public class UserLoginInfo implements Serializable {
         if (getClass() != that.getClass()) {
             return false;
         }
-        UserLoginInfo other = (UserLoginInfo) that;
+        UserPermissions other = (UserPermissions) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
             && (this.getEmployeeId() == null ? other.getEmployeeId() == null : this.getEmployeeId().equals(other.getEmployeeId()))
-            && (this.getUsername() == null ? other.getUsername() == null : this.getUsername().equals(other.getUsername()))
-            && (this.getPassword() == null ? other.getPassword() == null : this.getPassword().equals(other.getPassword()))
-            && (this.getLoginTime() == null ? other.getLoginTime() == null : this.getLoginTime().equals(other.getLoginTime()))
-            && (this.getCreatedAt() == null ? other.getCreatedAt() == null : this.getCreatedAt().equals(other.getCreatedAt()))
+            && (this.getPermissionLevel() == null ? other.getPermissionLevel() == null : this.getPermissionLevel().equals(other.getPermissionLevel()))
             && (this.getUpdatedAt() == null ? other.getUpdatedAt() == null : this.getUpdatedAt().equals(other.getUpdatedAt()))
             && (this.getAdd1() == null ? other.getAdd1() == null : this.getAdd1().equals(other.getAdd1()))
             && (this.getAdd2() == null ? other.getAdd2() == null : this.getAdd2().equals(other.getAdd2()))
@@ -108,10 +87,7 @@ public class UserLoginInfo implements Serializable {
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((getEmployeeId() == null) ? 0 : getEmployeeId().hashCode());
-        result = prime * result + ((getUsername() == null) ? 0 : getUsername().hashCode());
-        result = prime * result + ((getPassword() == null) ? 0 : getPassword().hashCode());
-        result = prime * result + ((getLoginTime() == null) ? 0 : getLoginTime().hashCode());
-        result = prime * result + ((getCreatedAt() == null) ? 0 : getCreatedAt().hashCode());
+        result = prime * result + ((getPermissionLevel() == null) ? 0 : getPermissionLevel().hashCode());
         result = prime * result + ((getUpdatedAt() == null) ? 0 : getUpdatedAt().hashCode());
         result = prime * result + ((getAdd1() == null) ? 0 : getAdd1().hashCode());
         result = prime * result + ((getAdd2() == null) ? 0 : getAdd2().hashCode());
@@ -127,10 +103,7 @@ public class UserLoginInfo implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", employeeId=").append(employeeId);
-        sb.append(", username=").append(username);
-        sb.append(", password=").append(password);
-        sb.append(", loginTime=").append(loginTime);
-        sb.append(", createdAt=").append(createdAt);
+        sb.append(", permissionLevel=").append(permissionLevel);
         sb.append(", updatedAt=").append(updatedAt);
         sb.append(", add1=").append(add1);
         sb.append(", add2=").append(add2);

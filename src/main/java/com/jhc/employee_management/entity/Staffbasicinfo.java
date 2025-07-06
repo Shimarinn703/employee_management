@@ -9,12 +9,12 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * ログイン情報
- * @TableName user_login_info
+ * 職員基本情報
+ * @TableName staffbasicinfo
  */
-@TableName(value ="user_login_info")
+@TableName(value ="staffbasicinfo")
 @Data
-public class UserLoginInfo implements Serializable {
+public class Staffbasicinfo implements Serializable {
     /**
      * 順番
      */
@@ -22,28 +22,40 @@ public class UserLoginInfo implements Serializable {
     private Long id;
 
     /**
-     * 社員コード
+     * 社員ID
      */
     @TableField(value = "employee_id")
-    private String employeeId;
+    private Long employeeId;
 
     /**
-     * ユーザー名
+     * 生年月日
      */
-    @TableField(value = "username")
-    private String username;
+    @TableField(value = "birthday")
+    private Date birthday;
 
     /**
-     * パスワード
+     * 性別
      */
-    @TableField(value = "password")
-    private String password;
+    @TableField(value = "gender")
+    private String gender;
 
     /**
-     * ログイン日時
+     * 国籍
      */
-    @TableField(value = "login_time")
-    private Date loginTime;
+    @TableField(value = "nationality")
+    private String nationality;
+
+    /**
+     * 婚姻状況
+     */
+    @TableField(value = "marital_status")
+    private String maritalStatus;
+
+    /**
+     * 写真
+     */
+    @TableField(value = "photo")
+    private String photo;
 
     /**
      * 作成日時
@@ -89,12 +101,14 @@ public class UserLoginInfo implements Serializable {
         if (getClass() != that.getClass()) {
             return false;
         }
-        UserLoginInfo other = (UserLoginInfo) that;
+        Staffbasicinfo other = (Staffbasicinfo) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
             && (this.getEmployeeId() == null ? other.getEmployeeId() == null : this.getEmployeeId().equals(other.getEmployeeId()))
-            && (this.getUsername() == null ? other.getUsername() == null : this.getUsername().equals(other.getUsername()))
-            && (this.getPassword() == null ? other.getPassword() == null : this.getPassword().equals(other.getPassword()))
-            && (this.getLoginTime() == null ? other.getLoginTime() == null : this.getLoginTime().equals(other.getLoginTime()))
+            && (this.getBirthday() == null ? other.getBirthday() == null : this.getBirthday().equals(other.getBirthday()))
+            && (this.getGender() == null ? other.getGender() == null : this.getGender().equals(other.getGender()))
+            && (this.getNationality() == null ? other.getNationality() == null : this.getNationality().equals(other.getNationality()))
+            && (this.getMaritalStatus() == null ? other.getMaritalStatus() == null : this.getMaritalStatus().equals(other.getMaritalStatus()))
+            && (this.getPhoto() == null ? other.getPhoto() == null : this.getPhoto().equals(other.getPhoto()))
             && (this.getCreatedAt() == null ? other.getCreatedAt() == null : this.getCreatedAt().equals(other.getCreatedAt()))
             && (this.getUpdatedAt() == null ? other.getUpdatedAt() == null : this.getUpdatedAt().equals(other.getUpdatedAt()))
             && (this.getAdd1() == null ? other.getAdd1() == null : this.getAdd1().equals(other.getAdd1()))
@@ -108,9 +122,11 @@ public class UserLoginInfo implements Serializable {
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((getEmployeeId() == null) ? 0 : getEmployeeId().hashCode());
-        result = prime * result + ((getUsername() == null) ? 0 : getUsername().hashCode());
-        result = prime * result + ((getPassword() == null) ? 0 : getPassword().hashCode());
-        result = prime * result + ((getLoginTime() == null) ? 0 : getLoginTime().hashCode());
+        result = prime * result + ((getBirthday() == null) ? 0 : getBirthday().hashCode());
+        result = prime * result + ((getGender() == null) ? 0 : getGender().hashCode());
+        result = prime * result + ((getNationality() == null) ? 0 : getNationality().hashCode());
+        result = prime * result + ((getMaritalStatus() == null) ? 0 : getMaritalStatus().hashCode());
+        result = prime * result + ((getPhoto() == null) ? 0 : getPhoto().hashCode());
         result = prime * result + ((getCreatedAt() == null) ? 0 : getCreatedAt().hashCode());
         result = prime * result + ((getUpdatedAt() == null) ? 0 : getUpdatedAt().hashCode());
         result = prime * result + ((getAdd1() == null) ? 0 : getAdd1().hashCode());
@@ -127,9 +143,11 @@ public class UserLoginInfo implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", employeeId=").append(employeeId);
-        sb.append(", username=").append(username);
-        sb.append(", password=").append(password);
-        sb.append(", loginTime=").append(loginTime);
+        sb.append(", birthday=").append(birthday);
+        sb.append(", gender=").append(gender);
+        sb.append(", nationality=").append(nationality);
+        sb.append(", maritalStatus=").append(maritalStatus);
+        sb.append(", photo=").append(photo);
         sb.append(", createdAt=").append(createdAt);
         sb.append(", updatedAt=").append(updatedAt);
         sb.append(", add1=").append(add1);

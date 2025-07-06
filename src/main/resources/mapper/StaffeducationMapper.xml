@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jhc.employee_management.mapper.StaffeducationMapper">
+
+    <resultMap id="BaseResultMap" type="com.jhc.employee_management.entity.Staffeducation">
+            <id property="id" column="id" />
+            <result property="employeeId" column="employee_id" />
+            <result property="schoolName" column="school_name" />
+            <result property="createdAt" column="created_at" />
+            <result property="updatedAt" column="updated_at" />
+            <result property="add1" column="add1" />
+            <result property="add2" column="add2" />
+            <result property="add3" column="add3" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,employee_id,school_name,created_at,updated_at,add1,
+        add2,add3
+    </sql>
+</mapper>

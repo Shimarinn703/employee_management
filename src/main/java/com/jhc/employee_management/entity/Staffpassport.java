@@ -9,12 +9,12 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * ログイン情報
- * @TableName user_login_info
+ * パスポート情報
+ * @TableName staffpassport
  */
-@TableName(value ="user_login_info")
+@TableName(value ="staffpassport")
 @Data
-public class UserLoginInfo implements Serializable {
+public class Staffpassport implements Serializable {
     /**
      * 順番
      */
@@ -25,25 +25,25 @@ public class UserLoginInfo implements Serializable {
      * 社員コード
      */
     @TableField(value = "employee_id")
-    private String employeeId;
+    private Long employeeId;
 
     /**
-     * ユーザー名
+     * パスポート番号
      */
-    @TableField(value = "username")
-    private String username;
+    @TableField(value = "passport_number")
+    private String passportNumber;
 
     /**
-     * パスワード
+     * パスポート有効期限
      */
-    @TableField(value = "password")
-    private String password;
+    @TableField(value = "passport_expiry")
+    private Date passportExpiry;
 
     /**
-     * ログイン日時
+     * 在留資格または期間
      */
-    @TableField(value = "login_time")
-    private Date loginTime;
+    @TableField(value = "residence_status")
+    private String residenceStatus;
 
     /**
      * 作成日時
@@ -89,12 +89,12 @@ public class UserLoginInfo implements Serializable {
         if (getClass() != that.getClass()) {
             return false;
         }
-        UserLoginInfo other = (UserLoginInfo) that;
+        Staffpassport other = (Staffpassport) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
             && (this.getEmployeeId() == null ? other.getEmployeeId() == null : this.getEmployeeId().equals(other.getEmployeeId()))
-            && (this.getUsername() == null ? other.getUsername() == null : this.getUsername().equals(other.getUsername()))
-            && (this.getPassword() == null ? other.getPassword() == null : this.getPassword().equals(other.getPassword()))
-            && (this.getLoginTime() == null ? other.getLoginTime() == null : this.getLoginTime().equals(other.getLoginTime()))
+            && (this.getPassportNumber() == null ? other.getPassportNumber() == null : this.getPassportNumber().equals(other.getPassportNumber()))
+            && (this.getPassportExpiry() == null ? other.getPassportExpiry() == null : this.getPassportExpiry().equals(other.getPassportExpiry()))
+            && (this.getResidenceStatus() == null ? other.getResidenceStatus() == null : this.getResidenceStatus().equals(other.getResidenceStatus()))
             && (this.getCreatedAt() == null ? other.getCreatedAt() == null : this.getCreatedAt().equals(other.getCreatedAt()))
             && (this.getUpdatedAt() == null ? other.getUpdatedAt() == null : this.getUpdatedAt().equals(other.getUpdatedAt()))
             && (this.getAdd1() == null ? other.getAdd1() == null : this.getAdd1().equals(other.getAdd1()))
@@ -108,9 +108,9 @@ public class UserLoginInfo implements Serializable {
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((getEmployeeId() == null) ? 0 : getEmployeeId().hashCode());
-        result = prime * result + ((getUsername() == null) ? 0 : getUsername().hashCode());
-        result = prime * result + ((getPassword() == null) ? 0 : getPassword().hashCode());
-        result = prime * result + ((getLoginTime() == null) ? 0 : getLoginTime().hashCode());
+        result = prime * result + ((getPassportNumber() == null) ? 0 : getPassportNumber().hashCode());
+        result = prime * result + ((getPassportExpiry() == null) ? 0 : getPassportExpiry().hashCode());
+        result = prime * result + ((getResidenceStatus() == null) ? 0 : getResidenceStatus().hashCode());
         result = prime * result + ((getCreatedAt() == null) ? 0 : getCreatedAt().hashCode());
         result = prime * result + ((getUpdatedAt() == null) ? 0 : getUpdatedAt().hashCode());
         result = prime * result + ((getAdd1() == null) ? 0 : getAdd1().hashCode());
@@ -127,9 +127,9 @@ public class UserLoginInfo implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", employeeId=").append(employeeId);
-        sb.append(", username=").append(username);
-        sb.append(", password=").append(password);
-        sb.append(", loginTime=").append(loginTime);
+        sb.append(", passportNumber=").append(passportNumber);
+        sb.append(", passportExpiry=").append(passportExpiry);
+        sb.append(", residenceStatus=").append(residenceStatus);
         sb.append(", createdAt=").append(createdAt);
         sb.append(", updatedAt=").append(updatedAt);
         sb.append(", add1=").append(add1);

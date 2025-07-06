@@ -9,41 +9,35 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * ログイン情報
- * @TableName user_login_info
+ * 社員テーブル
+ * @TableName employee
  */
-@TableName(value ="user_login_info")
+@TableName(value ="employee")
 @Data
-public class UserLoginInfo implements Serializable {
+public class Employee implements Serializable {
     /**
-     * 順番
+     * 社員ID
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
-     * 社員コード
+     * 部署ID
      */
-    @TableField(value = "employee_id")
-    private String employeeId;
+    @TableField(value = "department_id")
+    private Long departmentId;
 
     /**
-     * ユーザー名
+     * 社員名
      */
-    @TableField(value = "username")
-    private String username;
+    @TableField(value = "name")
+    private String name;
 
     /**
-     * パスワード
+     * 社員レベル
      */
-    @TableField(value = "password")
-    private String password;
-
-    /**
-     * ログイン日時
-     */
-    @TableField(value = "login_time")
-    private Date loginTime;
+    @TableField(value = "employee_level")
+    private String employeeLevel;
 
     /**
      * 作成日時
@@ -89,12 +83,11 @@ public class UserLoginInfo implements Serializable {
         if (getClass() != that.getClass()) {
             return false;
         }
-        UserLoginInfo other = (UserLoginInfo) that;
+        Employee other = (Employee) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getEmployeeId() == null ? other.getEmployeeId() == null : this.getEmployeeId().equals(other.getEmployeeId()))
-            && (this.getUsername() == null ? other.getUsername() == null : this.getUsername().equals(other.getUsername()))
-            && (this.getPassword() == null ? other.getPassword() == null : this.getPassword().equals(other.getPassword()))
-            && (this.getLoginTime() == null ? other.getLoginTime() == null : this.getLoginTime().equals(other.getLoginTime()))
+            && (this.getDepartmentId() == null ? other.getDepartmentId() == null : this.getDepartmentId().equals(other.getDepartmentId()))
+            && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
+            && (this.getEmployeeLevel() == null ? other.getEmployeeLevel() == null : this.getEmployeeLevel().equals(other.getEmployeeLevel()))
             && (this.getCreatedAt() == null ? other.getCreatedAt() == null : this.getCreatedAt().equals(other.getCreatedAt()))
             && (this.getUpdatedAt() == null ? other.getUpdatedAt() == null : this.getUpdatedAt().equals(other.getUpdatedAt()))
             && (this.getAdd1() == null ? other.getAdd1() == null : this.getAdd1().equals(other.getAdd1()))
@@ -107,10 +100,9 @@ public class UserLoginInfo implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
-        result = prime * result + ((getEmployeeId() == null) ? 0 : getEmployeeId().hashCode());
-        result = prime * result + ((getUsername() == null) ? 0 : getUsername().hashCode());
-        result = prime * result + ((getPassword() == null) ? 0 : getPassword().hashCode());
-        result = prime * result + ((getLoginTime() == null) ? 0 : getLoginTime().hashCode());
+        result = prime * result + ((getDepartmentId() == null) ? 0 : getDepartmentId().hashCode());
+        result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
+        result = prime * result + ((getEmployeeLevel() == null) ? 0 : getEmployeeLevel().hashCode());
         result = prime * result + ((getCreatedAt() == null) ? 0 : getCreatedAt().hashCode());
         result = prime * result + ((getUpdatedAt() == null) ? 0 : getUpdatedAt().hashCode());
         result = prime * result + ((getAdd1() == null) ? 0 : getAdd1().hashCode());
@@ -126,10 +118,9 @@ public class UserLoginInfo implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
-        sb.append(", employeeId=").append(employeeId);
-        sb.append(", username=").append(username);
-        sb.append(", password=").append(password);
-        sb.append(", loginTime=").append(loginTime);
+        sb.append(", departmentId=").append(departmentId);
+        sb.append(", name=").append(name);
+        sb.append(", employeeLevel=").append(employeeLevel);
         sb.append(", createdAt=").append(createdAt);
         sb.append(", updatedAt=").append(updatedAt);
         sb.append(", add1=").append(add1);
