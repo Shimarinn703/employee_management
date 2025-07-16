@@ -24,6 +24,19 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <!--springsecurity-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- JWT 工具库 -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+
         <!--mybatis的依赖-->
         <dependency>
             <groupId>com.alibaba</groupId>

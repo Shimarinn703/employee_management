@@ -9,5 +9,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
 * @createDate 2025-07-06 19:28:49
 */
 public interface UserPermissionsService extends IService<UserPermissions> {
-
+    /**
+     * 根据员工id取得
+     * @param employeeId
+     * @return
+     */
+    UserPermissions getByEmployeeId(String employeeId);
 }

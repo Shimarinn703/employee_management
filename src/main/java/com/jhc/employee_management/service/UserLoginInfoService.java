@@ -11,4 +11,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface UserLoginInfoService extends IService<UserLoginInfo> {
     Integer insertInfo(UserLoginInfo userLoginInfo);
 
+    UserLoginInfo getByUsername(String username);
+
+    /**
+     * 生成员工id，按顺序
+     * @return
+     */
+    String generateNextEmployeeId();
 }
