@@ -110,7 +110,7 @@ public class AuthController {
         userPermissionsService.save(permissions);
 
         log.info("【REGISTER】注册成功：用户名={}, employeeId={}", request.getUsername(), employeeId);
-        return ResponseEntity.ok("注册成功");
+        return ResponseEntity.ok(ApiResponse.success("注册成功", null));
     }
 
     //测试
