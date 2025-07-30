@@ -4,6 +4,7 @@ import com.jhc.employee_management.dto.LoginRequest;
 import com.jhc.employee_management.dto.RegisterRequest;
 import com.jhc.employee_management.entity.UserLoginInfo;
 import com.jhc.employee_management.entity.UserPermissions;
+import com.jhc.employee_management.exception.SystemException;
 import com.jhc.employee_management.security.JwtUtil;
 import com.jhc.employee_management.service.UserLoginInfoService;
 import com.jhc.employee_management.service.UserPermissionsService;
@@ -14,10 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.Collections;
@@ -82,4 +80,13 @@ public class AuthController {
 
         return ResponseEntity.ok("注册成功");
     }
+
+    //测试
+    @GetMapping("/api/test")
+    public String testMethod() {
+        throw new SystemException("11111");
+
+    }
+
+
 }
