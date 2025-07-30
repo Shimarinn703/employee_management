@@ -2,6 +2,8 @@ package com.jhc.employee_management.config;
 
 
 import com.jhc.employee_management.security.CustomUserDetailsService;
+import com.jhc.employee_management.security.JwtAccessDeniedHandler;
+import com.jhc.employee_management.security.JwtAuthenticationEntryPoint;
 import com.jhc.employee_management.security.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +32,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Resource
     private CustomUserDetailsService userDetailsService;
 
+    @Resource
+    private JwtAuthenticationEntryPoint authenticationEntryPoint;
+
+    @Resource
+    private JwtAccessDeniedHandler accessDeniedHandler;
+
     // 配置 HTTP 安全策略
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -37,6 +45,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/auth/login", "/auth/register").permitAll()  // 放行登录接口
                 .anyRequest().authenticated()
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(authenticationEntryPoint) // 未认证处理器
+                .accessDeniedHandler(accessDeniedHandler)           // 权限不足处理器
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);

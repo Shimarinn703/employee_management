@@ -32,6 +32,11 @@ public class JwtUtil {
         return extractClaim(token, Claims::getSubject);
     }
 
+    //过期时间获取
+    public long getExpirationSeconds() {
+        return jwtExpiration / 1000;
+    }
+
     // 检查 Token 是否过期
     public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
