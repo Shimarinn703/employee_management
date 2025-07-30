@@ -6,17 +6,16 @@ import com.jhc.employee_management.dto.RegisterRequest;
 import com.jhc.employee_management.entity.UserLoginInfo;
 import com.jhc.employee_management.entity.UserPermissions;
 import com.jhc.employee_management.exception.BusinessException;
-import com.jhc.employee_management.exception.SystemException;
 import com.jhc.employee_management.security.JwtUtil;
 import com.jhc.employee_management.service.UserLoginInfoService;
 import com.jhc.employee_management.service.UserPermissionsService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +25,7 @@ import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -47,6 +47,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        log.info("【LOGIN】尝试登录，用户名：{}", request.getUsername());
         try {
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
@@ -70,9 +71,11 @@ public class AuthController {
             result.put("expiresIn", expiresIn);
             result.put("user", userInfo);
 
+            log.info("【LOGIN】登录成功，用户名：{}", request.getUsername());
             return ResponseEntity.ok(ApiResponse.success("ログイン成功", result));
 
         } catch (BadCredentialsException e) {
+            log.error("【LOGIN】登录异常，用户名：{}", request.getUsername(), e);
             throw new BusinessException("ユーザー名またはパスワードが正しくありません");
         }
     }
@@ -81,7 +84,9 @@ public class AuthController {
     @PostMapping("/register")
     @Transactional
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+        log.info("【REGISTER】注册请求：用户名={}, employeeId={}", request.getUsername(), request.getEmployeeId());
         if (userLoginInfoService.getByUsername(request.getUsername()) != null) {
+            log.warn("【REGISTER】用户名已存在：{}", request.getUsername());
             return ResponseEntity.badRequest().body("用户名已存在");
         }
 
@@ -104,13 +109,14 @@ public class AuthController {
 
         userPermissionsService.save(permissions);
 
+        log.info("【REGISTER】注册成功：用户名={}, employeeId={}", request.getUsername(), employeeId);
         return ResponseEntity.ok("注册成功");
     }
 
     //测试
     @GetMapping("/api/test")
-    public String testMethod() {
-        throw new SystemException("11111");
+    public String testMethod() throws Exception {
+        throw new Exception("11111");
 
     }
 
