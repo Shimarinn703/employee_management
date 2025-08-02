@@ -1,6 +1,7 @@
 package com.jhc.employee_management.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jhc.employee_management.common.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
@@ -10,8 +11,6 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
@@ -26,10 +25,7 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 
-        Map<String, Object> res = new HashMap<>();
-        res.put("code", 403);
-        res.put("type", "権限不足");
-        res.put("message", "アクセス権限がありません");
+        ApiResponse<Object> res = ApiResponse.error(403, "アクセス権限がありません");
 
         response.getWriter().write(new ObjectMapper().writeValueAsString(res));
     }

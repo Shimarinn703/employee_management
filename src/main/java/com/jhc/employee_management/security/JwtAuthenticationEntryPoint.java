@@ -1,6 +1,7 @@
 package com.jhc.employee_management.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jhc.employee_management.common.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;
@@ -10,8 +11,6 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
@@ -26,10 +25,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-        Map<String, Object> res = new HashMap<>();
-        res.put("code", 401);
-        res.put("type", "未認証");
-        res.put("message", "ログインが必要です");
+        ApiResponse<Object> res = ApiResponse.error(401, "ログインが必要です");
 
         response.getWriter().write(new ObjectMapper().writeValueAsString(res));
     }
