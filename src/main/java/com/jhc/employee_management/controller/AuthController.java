@@ -87,7 +87,7 @@ public class AuthController {
         log.info("【REGISTER】注册请求：用户名={}, employeeId={}", request.getUsername(), request.getEmployeeId());
         if (userLoginInfoService.getByUsername(request.getUsername()) != null) {
             log.warn("【REGISTER】用户名已存在：{}", request.getUsername());
-            return ResponseEntity.badRequest().body("用户名已存在");
+            return ResponseEntity.badRequest().body(ApiResponse.error(100,"ユーザーが既に存在している"));
         }
 
         // 保存用户登录信息

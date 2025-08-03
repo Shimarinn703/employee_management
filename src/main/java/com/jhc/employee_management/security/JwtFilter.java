@@ -12,6 +12,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -22,9 +24,27 @@ public class JwtFilter extends OncePerRequestFilter {
     @Resource
     private CustomUserDetailsService userDetailsService;
 
+    private static final List<String> EXCLUDE_PATHS = Arrays.asList(
+            "/auth/login",
+            "/auth/register",
+            "/auth/captcha",
+            "/public/",        // 静态资源前缀，例如图片或公共页面
+            "/favicon.ico"
+    );
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
+        String path = request.getRequestURI();
+
+        // 判断当前请求是否在白名单中
+        for (String exclude : EXCLUDE_PATHS) {
+            if (path.startsWith(exclude)) {
+                chain.doFilter(request, response);
+                return;
+            }
+        }
+
         final String authHeader = request.getHeader("Authorization");
         String username = null;
         String jwt = null;
