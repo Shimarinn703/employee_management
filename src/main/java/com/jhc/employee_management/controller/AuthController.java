@@ -123,7 +123,11 @@ public class AuthController {
     //测试2
     @GetMapping("/api/test2")
     public String testMethod2() throws Exception {
+<<<<<<< HEAD
         throw new Exception("222221");
+=======
+        throw new Exception("222211");
+>>>>>>> refs/heads/master
     }
 
 }
