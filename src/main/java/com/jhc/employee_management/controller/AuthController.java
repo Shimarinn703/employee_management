@@ -120,12 +120,6 @@ public class AuthController {
 
     }
 
-    //测试2
-    @GetMapping("/api/test2")
-    public String testMethod2() throws Exception {
 
-        throw new Exception("11111");
-
-    }
 
 }
