@@ -124,7 +124,6 @@ public class AuthController {
     @GetMapping("/api/test2")
     public String testMethod2() throws Exception {
         throw new Exception("11111");
-
     }
 
 }
