@@ -1,5 +1,28 @@
 package com.jhc.employee_management.controller;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.jhc.employee_management.common.ApiResponse;
 import com.jhc.employee_management.dto.LoginRequest;
 import com.jhc.employee_management.dto.RegisterRequest;
@@ -9,21 +32,8 @@ import com.jhc.employee_management.exception.BusinessException;
 import com.jhc.employee_management.security.JwtUtil;
 import com.jhc.employee_management.service.UserLoginInfoService;
 import com.jhc.employee_management.service.UserPermissionsService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.security.core.GrantedAuthority;
 
-import javax.annotation.Resource;
-import java.util.*;
-import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
@@ -120,7 +130,11 @@ public class AuthController {
 
     }
 
+    //测试
+    @GetMapping("/api/test")
+    public String testMethod2() throws Exception {
+        throw new Exception("22222");
 
+    }
    
-
 }
