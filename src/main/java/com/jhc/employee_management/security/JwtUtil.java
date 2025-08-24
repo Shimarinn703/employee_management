@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -27,14 +28,29 @@ public class JwtUtil {
     @Value("${jwt.expiration}")
     private long jwtExpiration;
 
+    @Value("${jwt.remember-expiration:604800000}") // 7天
+    private long rememberExpiration;
+
+    //根据 rememberMe 生成 Token
+    public String generateToken(UserDetails userDetails, boolean rememberMe) {
+        Map<String, Object> claims = new HashMap<>();
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(org.springframework.security.core.GrantedAuthority::getAuthority)
+                .collect(java.util.stream.Collectors.toList());
+        claims.put("roles", roles);
+
+        long ttl = rememberMe ? rememberExpiration : jwtExpiration;
+        return createToken(claims, userDetails.getUsername(), ttl);
+    }
+
+    //获取过期时间
+    public Date getExpirationDate(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
+
     // 从 Token 中提取用户名
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
-    }
-
-    //过期时间获取
-    public long getExpirationSeconds() {
-        return jwtExpiration / 1000;
     }
 
     // 检查 Token 是否过期
@@ -46,14 +62,6 @@ public class JwtUtil {
     public boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-    }
-
-    // 生成 Token（可以附带额外信息）
-    public String generateToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
-        // 可以加角色、用户ID等自定义字段
-        claims.put("authorities", userDetails.getAuthorities());
-        return createToken(claims, userDetails.getUsername());
     }
 
     // ========================= 内部实现 ========================
@@ -74,12 +82,13 @@ public class JwtUtil {
                 .getBody();
     }
 
-    private String createToken(Map<String, Object> claims, String subject) {
+    private String createToken(Map<String, Object> claims, String subject, long ttlMillis) {
+        long now = System.currentTimeMillis();
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
+                .setIssuedAt(new Date(now))
+                .setExpiration(new Date(now + ttlMillis))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }

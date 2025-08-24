@@ -33,17 +33,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         // 权限信息
         UserPermissions userPermissions = userPermissionsService.getByEmployeeId(user.getEmployeeId());
-        if (userPermissions == null) {
-            throw new RuntimeException("用户权限未配置");
-        }
+        int level = (userPermissions == null) ? 1 : userPermissions.getPermissionLevel();
 
-        // 将 permission_level 映射成 Spring Security 权限
         List<GrantedAuthority> authorities = new ArrayList<>();
-        if (userPermissions.getPermissionLevel() == 2) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        } else {
-            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-        }
+        authorities.add(new SimpleGrantedAuthority(level == 2 ? "ROLE_ADMIN" : "ROLE_USER"));
 
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),

@@ -24,22 +24,29 @@ public class JwtFilter extends OncePerRequestFilter {
     @Resource
     private CustomUserDetailsService userDetailsService;
 
+    @Resource
+    private TokenBlacklistService tokenBlacklistService;
+
     private static final List<String> EXCLUDE_PATHS = Arrays.asList(
             "/auth/login",
             "/auth/register",
             "/auth/captcha",
-            "/public/",        // 静态资源前缀，例如图片或公共页面
+            "/public/",        // 静态资源
             "/favicon.ico"
     );
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
-        String path = request.getRequestURI();
-
-        // 判断当前请求是否在白名单中
-        for (String exclude : EXCLUDE_PATHS) {
-            if (path.startsWith(exclude)) {
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            chain.doFilter(request, response);
+            return;
+        }
+        // 1) 放行无需鉴权的路径（适配 contextPath）
+        String contextPath = request.getContextPath();
+        String path = request.getRequestURI().substring(contextPath.length());
+        for (String p : EXCLUDE_PATHS) {
+            if (path.startsWith(p)) {
                 chain.doFilter(request, response);
                 return;
             }
@@ -51,19 +58,48 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             jwt = authHeader.substring(7);
-            username = jwtUtil.extractUsername(jwt);
+
+            // 2) 黑名单拦截
+            if (tokenBlacklistService.isBlacklisted(jwt)) {
+                writeUnauthorized(response, "ログインが必要です");
+                return;
+            }
+
+            try {
+                username = jwtUtil.extractUsername(jwt);
+            } catch (io.jsonwebtoken.ExpiredJwtException e) {
+                writeUnauthorized(response, "ログイン情報の有効期限が切れました。再ログインしてください。");
+                return;
+            } catch (Exception e) {
+                writeUnauthorized(response, "トークンが無効です。再ログインしてください。");
+                return;
+            }
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if (jwtUtil.validateToken(jwt, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+            try {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                if (jwtUtil.validateToken(jwt, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+            } catch (org.springframework.security.core.userdetails.UsernameNotFoundException e) {
+                writeUnauthorized(response, "ユーザーが存在しません"); // 401 + ApiResponse
+                return;
             }
         }
 
         chain.doFilter(request, response);
+    }
+
+    //统一返回401 + ApiResponse
+    private void writeUnauthorized(HttpServletResponse response, String msg) throws IOException {
+        response.setContentType("application/json;charset=UTF-8");
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        com.jhc.employee_management.common.ApiResponse<Object> body =
+                com.jhc.employee_management.common.ApiResponse.error(401, msg);
+        response.getWriter().write(new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(body));
     }
 
 }
