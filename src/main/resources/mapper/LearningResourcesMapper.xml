@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jhc.employee_management.mapper.LearningResourcesMapper">
+
+    <resultMap id="BaseResultMap" type="com.jhc.employee_management.entity.LearningResources">
+        <id property="id" column="id" />
+        <result property="title" column="title" />
+        <result property="link" column="link" />
+        <result property="creatorId" column="creator_id" />
+        <result property="createdAt" column="created_at" />
+        <result property="updatedAt" column="updated_at" />
+
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,title,link,creatorId,created_at,updated_at
+    </sql>
+    <insert id="creatLearning" parameterType="com.jhc.employee_management.entity.LearningResources">
+        insert into learning_resources (title,link,creator_id,created_at,updated_at) values (#{title}, #{link}, #{creatorId}, NOW(), NOW())
+    </insert>
+</mapper>

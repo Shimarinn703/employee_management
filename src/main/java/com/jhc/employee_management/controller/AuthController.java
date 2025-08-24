@@ -134,13 +134,6 @@ public class AuthController {
         return ResponseEntity.ok(ApiResponse.success("登録成功", null));
     }
 
-    //测试
-    @GetMapping("/api/test")
-    public String testMethod() throws Exception {
-        throw new Exception("11111");
-
-    }
-
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request) {
         final String authHeader = request.getHeader("Authorization");
