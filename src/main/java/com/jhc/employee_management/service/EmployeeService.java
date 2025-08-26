@@ -1,7 +1,7 @@
 package com.jhc.employee_management.service;
 
-import com.jhc.employee_management.entity.Employee;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.jhc.employee_management.entity.Employee;
 
 /**
 * @author 30839
@@ -9,5 +9,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 * @createDate 2025-07-06 19:28:49
 */
 public interface EmployeeService extends IService<Employee> {
-
+	
 }

@@ -1,11 +1,14 @@
 package com.jhc.employee_management.entity;
 
+import java.io.Serializable;
+import java.util.Date;
+import java.util.Objects;
+
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.util.Date;
+
 import lombok.Data;
 
 /**
@@ -22,23 +25,92 @@ public class Employee implements Serializable {
     private Long id;
 
     /**
-     * 部署ID
+     * 所属部門ID
      */
-    @TableField(value = "department_id")
+    @TableField("department_id")
     private Long departmentId;
 
     /**
-     * 社員名
+     * 従業員名
      */
-    @TableField(value = "name")
     private String name;
 
     /**
-     * 社員レベル
+     * 従業員レベル
      */
-    @TableField(value = "employee_level")
+    @TableField("employee_level")
     private String employeeLevel;
 
+    /**
+     * メールアドレス
+     */
+    private String email;
+
+    /**
+     * 電話番号
+     */
+    @TableField("phone_no")
+    private String phoneNo;
+
+    /**
+     * 入社年月日
+     */
+    @TableField("hire_date")
+    private Date hireDate;
+
+    /**
+     * 役職
+     */
+    private String position;
+
+    /**
+     * 勤務形態
+     */
+    @TableField("employment_type")
+    private String employmentType;
+
+    /**
+     * 直属上司名
+     */
+    @TableField("manager_name")
+    private String managerName;
+
+    /**
+     * 緊急連絡先（氏名）
+     */
+    @TableField("emergency_contact")
+    private String emergencyContact;
+
+    /**
+     * 緊急連絡先（電話）
+     */
+    @TableField("emergency_tel")
+    private String emergencyTel;
+
+    /**
+     * Slack ID
+     */
+    @TableField("slack_id")
+    private String slackId;
+
+    /**
+     * Teams ID
+     */
+    @TableField("teams_id")
+    private String teamsId;
+
+    /**
+     * 写真ファイルパス
+     */
+    @TableField("photo_path")
+    private String photoPath;
+
+    /**
+     * 自己PR
+     */
+    @TableField("self_pr")
+    private String selfPr;
+    
     /**
      * 作成日時
      */
@@ -84,31 +156,15 @@ public class Employee implements Serializable {
             return false;
         }
         Employee other = (Employee) that;
-        return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getDepartmentId() == null ? other.getDepartmentId() == null : this.getDepartmentId().equals(other.getDepartmentId()))
-            && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
-            && (this.getEmployeeLevel() == null ? other.getEmployeeLevel() == null : this.getEmployeeLevel().equals(other.getEmployeeLevel()))
-            && (this.getCreatedAt() == null ? other.getCreatedAt() == null : this.getCreatedAt().equals(other.getCreatedAt()))
-            && (this.getUpdatedAt() == null ? other.getUpdatedAt() == null : this.getUpdatedAt().equals(other.getUpdatedAt()))
-            && (this.getAdd1() == null ? other.getAdd1() == null : this.getAdd1().equals(other.getAdd1()))
-            && (this.getAdd2() == null ? other.getAdd2() == null : this.getAdd2().equals(other.getAdd2()))
-            && (this.getAdd3() == null ? other.getAdd3() == null : this.getAdd3().equals(other.getAdd3()));
+        // 4. 使用主键 ID 来判断两个对象是否逻辑相等
+        // 注意：这里使用 Objects.equals() 以安全地处理 null 值
+        return Objects.equals(id, other.id);
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
-        result = prime * result + ((getDepartmentId() == null) ? 0 : getDepartmentId().hashCode());
-        result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
-        result = prime * result + ((getEmployeeLevel() == null) ? 0 : getEmployeeLevel().hashCode());
-        result = prime * result + ((getCreatedAt() == null) ? 0 : getCreatedAt().hashCode());
-        result = prime * result + ((getUpdatedAt() == null) ? 0 : getUpdatedAt().hashCode());
-        result = prime * result + ((getAdd1() == null) ? 0 : getAdd1().hashCode());
-        result = prime * result + ((getAdd2() == null) ? 0 : getAdd2().hashCode());
-        result = prime * result + ((getAdd3() == null) ? 0 : getAdd3().hashCode());
-        return result;
+        // 使用主键 ID 的哈希值，与 equals 方法保持一致
+        return Objects.hash(id);
     }
 
     @Override
@@ -119,13 +175,20 @@ public class Employee implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", departmentId=").append(departmentId);
-        sb.append(", name=").append(name);
-        sb.append(", employeeLevel=").append(employeeLevel);
-        sb.append(", createdAt=").append(createdAt);
-        sb.append(", updatedAt=").append(updatedAt);
-        sb.append(", add1=").append(add1);
-        sb.append(", add2=").append(add2);
-        sb.append(", add3=").append(add3);
+        sb.append(", name='").append(name);
+        sb.append(", employeeLevel='").append(employeeLevel);
+        sb.append(", email='").append(email);
+        sb.append(", phoneNo='").append(phoneNo);
+        sb.append(", hireDate=").append(hireDate);
+        sb.append(", position='").append(position);
+        sb.append(", employmentType='").append(employmentType);
+        sb.append(", managerName='").append(managerName);
+        sb.append(", emergencyContact='").append(emergencyContact);
+        sb.append(", emergencyTel='").append(emergencyTel);
+        sb.append(", slackId='").append(slackId);
+        sb.append(", teamsId='").append(teamsId);
+        sb.append(", photoPath='").append(photoPath);
+        sb.append(", selfPr='").append(selfPr);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

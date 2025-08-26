@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.jhc.employee_management.mapper.StaffSkillMapper">
+
+    <resultMap id="BaseResultMap" type="com.jhc.employee_management.entity.StaffSkill">
+        <id column="id" property="id" />
+        <result column="employee_id" property="employeeId" />
+        <result column="skill_id" property="skillId" />
+        <result column="experience_level" property="experienceLevel" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, employee_id, skill_id, experience_level, created_at, updated_at
+    </sql>
+
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM staffskill
+        WHERE id = #{id}
+    </select>
+    
+    <select id="selectByEmployeeId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM staffskill
+        WHERE employee_id = #{employeeId}
+    </select>
+    
+    <insert id="insert" parameterType="com.jhc.employee_management.entity.StaffSkill" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO staffskill (
+            employee_id, skill_id, experience_level, created_at, updated_at
+        ) VALUES (
+            #{employeeId}, #{skillId}, #{experienceLevel}, #{createdAt}, #{updatedAt}
+        )
+    </insert>
+
+    <update id="updateById" parameterType="com.jhc.employee_management.entity.StaffSkill">
+        UPDATE staffskill
+        <set>
+            <if test="employeeId != null">employee_id = #{employeeId},</if>
+            <if test="skillId != null">skill_id = #{skillId},</if>
+            <if test="experienceLevel != null and experienceLevel != ''">experience_level = #{experienceLevel},</if>
+            <if test="updatedAt != null">updated_at = #{updatedAt},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM staffskill
+        WHERE id = #{id}
+    </delete>
+    
+</mapper>

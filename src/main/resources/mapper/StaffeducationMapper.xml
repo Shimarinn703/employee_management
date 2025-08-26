@@ -5,18 +5,70 @@
 <mapper namespace="com.jhc.employee_management.mapper.StaffeducationMapper">
 
     <resultMap id="BaseResultMap" type="com.jhc.employee_management.entity.Staffeducation">
-            <id property="id" column="id" />
-            <result property="employeeId" column="employee_id" />
-            <result property="schoolName" column="school_name" />
-            <result property="createdAt" column="created_at" />
-            <result property="updatedAt" column="updated_at" />
-            <result property="add1" column="add1" />
-            <result property="add2" column="add2" />
-            <result property="add3" column="add3" />
+        <id column="id" property="id" />
+        <result column="employee_id" property="employeeId" />
+        <result column="start_ymd" property="startYmd" />
+        <result column="end_ymd" property="endYmd" />
+        <result column="school_name" property="schoolName" />
+        <result column="faculty_name" property="facultyName" />
+        <result column="department" property="department" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+        <result column="add1" property="add1" />
+        <result column="add2" property="add2" />
+        <result column="add3" property="add3" />
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,employee_id,school_name,created_at,updated_at,add1,
-        add2,add3
+        id, employee_id, start_ymd, end_ymd, school_name,
+        faculty_name, department, created_at, updated_at, add1, add2, add3
     </sql>
+
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM staffeducation
+        WHERE id = #{id}
+    </select>
+    
+    <select id="selectByEmployeeId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM staffeducation
+        WHERE employee_id = #{employeeId}
+        ORDER BY end_ymd DESC
+    </select>
+    
+    <insert id="insert" parameterType="com.jhc.employee_management.entity.Staffeducation" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO staffeducation (
+            employee_id, start_ymd, end_ymd, school_name, faculty_name,
+            department, created_at, updated_at, add1, add2, add3
+        ) VALUES (
+            #{employeeId}, #{startYmd}, #{endYmd}, #{schoolName}, #{facultyName},
+            #{department}, #{createdAt}, #{updatedAt}, #{add1}, #{add2}, #{add3}
+        )
+    </insert>
+
+    <update id="updateById" parameterType="com.jhc.employee_management.entity.Staffeducation">
+        UPDATE staffeducation
+        <set>
+            <if test="employeeId != null">employee_id = #{employeeId},</if>
+            <if test="startYmd != null">start_ymd = #{startYmd},</if>
+            <if test="endYmd != null">end_ymd = #{endYmd},</if>
+            <if test="schoolName != null and schoolName != ''">school_name = #{schoolName},</if>
+            <if test="facultyName != null and facultyName != ''">faculty_name = #{facultyName},</if>
+            <if test="department != null and department != ''">department = #{department},</if>
+            <if test="updatedAt != null">updated_at = #{updatedAt},</if>
+            <if test="add1 != null and add1 != ''">add1 = #{add1},</if>
+            <if test="add2 != null and add2 != ''">add2 = #{add2},</if>
+            <if test="add3 != null and add3 != ''">add3 = #{add3},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM staffeducation
+        WHERE id = #{id}
+    </delete>
+    
 </mapper>

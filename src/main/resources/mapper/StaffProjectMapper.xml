@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.jhc.employee_management.mapper.StaffProjectMapper">
+
+    <resultMap id="BaseResultMap" type="com.jhc.employee_management.entity.StaffProject">
+        <id column="project_id" property="projectId" />
+        <result column="employee_id" property="employeeId" />
+        <result column="project_name" property="projectName" />
+        <result column="project_start" property="projectStart" />
+        <result column="project_end" property="projectEnd" />
+        <result column="project_role" property="projectRole" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        project_id, employee_id, project_name, project_start, project_end, project_role
+    </sql>
+
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM staffproject
+        WHERE project_id = #{id}
+    </select>
+    
+    <select id="selectByEmployeeId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM staffproject
+        WHERE employee_id = #{employeeId}
+    </select>
+    
+    <insert id="insert" parameterType="com.jhc.employee_management.entity.StaffProject" useGeneratedKeys="true" keyProperty="projectId">
+        INSERT INTO staffproject (
+            employee_id, project_name, project_start, project_end, project_role
+        ) VALUES (
+            #{employeeId}, #{projectName}, #{projectStart}, #{projectEnd}, #{projectRole}
+        )
+    </insert>
+
+    <update id="updateById" parameterType="com.jhc.employee_management.entity.StaffProject">
+        UPDATE staffproject
+        <set>
+            <if test="employeeId != null">employee_id = #{employeeId},</if>
+            <if test="projectName != null and projectName != ''">project_name = #{projectName},</if>
+            <if test="projectStart != null and projectStart != ''">project_start = #{projectStart},</if>
+            <if test="projectEnd != null and projectEnd != ''">project_end = #{projectEnd},</if>
+            <if test="projectRole != null and projectRole != ''">project_role = #{projectRole},</if>
+        </set>
+        WHERE project_id = #{projectId}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM staffproject
+        WHERE project_id = #{id}
+    </delete>
+    
+</mapper>

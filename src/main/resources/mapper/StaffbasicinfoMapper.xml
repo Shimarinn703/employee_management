@@ -5,23 +5,71 @@
 <mapper namespace="com.jhc.employee_management.mapper.StaffbasicinfoMapper">
 
     <resultMap id="BaseResultMap" type="com.jhc.employee_management.entity.Staffbasicinfo">
-            <id property="id" column="id" />
-            <result property="employeeId" column="employee_id" />
-            <result property="birthday" column="birthday" />
-            <result property="gender" column="gender" />
-            <result property="nationality" column="nationality" />
-            <result property="maritalStatus" column="marital_status" />
-            <result property="photo" column="photo" />
-            <result property="createdAt" column="created_at" />
-            <result property="updatedAt" column="updated_at" />
-            <result property="add1" column="add1" />
-            <result property="add2" column="add2" />
-            <result property="add3" column="add3" />
+          <id column="id" property="id" />
+        <result column="employee_id" property="employeeId" />
+        <result column="birthday" property="birthday" />
+        <result column="gender" property="gender" />
+        <result column="nationality" property="nationality" />
+        <result column="marital_status" property="maritalStatus" />
+        <result column="photo" property="photo" />
+        <result column="address" property="address" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+        <result column="add1" property="add1" />
+        <result column="add2" property="add2" />
+        <result column="add3" property="add3" />
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,employee_id,birthday,gender,nationality,marital_status,
-        photo,created_at,updated_at,add1,add2,
-        add3
+        id, employee_id, birthday, gender, nationality, marital_status,
+        photo, address, created_at, updated_at, add1, add2, add3
     </sql>
+
+    <select id="selectById" parameterType="com.jhc.employee_management.entity.Staffbasicinfo" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM staffbasicinfo
+        WHERE id = #{id}
+    </select>
+    
+    <select id="selectByEmployeeId" parameterType="com.jhc.employee_management.entity.Staffbasicinfo" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM staffbasicinfo
+        WHERE employee_id = #{employeeId}
+    </select>
+    
+    <insert id="insert" parameterType="com.jhc.employee_management.entity.Staffbasicinfo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO staffbasicinfo (
+            employee_id, birthday, gender, nationality, marital_status,
+            photo, address, created_at, updated_at, add1, add2, add3
+        ) VALUES (
+            #{employeeId}, #{birthday}, #{gender}, #{nationality}, #{maritalStatus},
+            #{photo}, #{address}, #{createdAt}, #{updatedAt}, #{add1}, #{add2}, #{add3}
+        )
+    </insert>
+
+    <update id="updateById" parameterType="com.jhc.employee_management.entity.Staffbasicinfo">
+        UPDATE staffbasicinfo
+        <set>
+            <if test="employeeId != null">employee_id = #{employeeId},</if>
+            <if test="birthday != null">birthday = #{birthday},</if>
+            <if test="gender != null and gender != ''">gender = #{gender},</if>
+            <if test="nationality != null and nationality != ''">nationality = #{nationality},</if>
+            <if test="maritalStatus != null and maritalStatus != ''">marital_status = #{maritalStatus},</if>
+            <if test="photo != null and photo != ''">photo = #{photo},</if>
+            <if test="address != null and address != ''">address = #{address},</if>
+            <if test="updatedAt != null">updated_at = #{updatedAt},</if>
+            <if test="add1 != null and add1 != ''">add1 = #{add1},</if>
+            <if test="add2 != null and add2 != ''">add2 = #{add2},</if>
+            <if test="add3 != null and add3 != ''">add3 = #{add3},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="com.jhc.employee_management.entity.Staffbasicinfo">
+        DELETE FROM staffbasicinfo
+        WHERE id = #{id}
+    </delete>
+    
 </mapper>

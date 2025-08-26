@@ -1,11 +1,13 @@
 package com.jhc.employee_management.entity;
 
+import java.io.Serializable;
+import java.util.Date;
+
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.util.Date;
+
 import lombok.Data;
 
 /**
@@ -26,12 +28,36 @@ public class Staffeducation implements Serializable {
      */
     @TableField(value = "employee_id")
     private Long employeeId;
-
+    
+    /**
+     * 入学年月日
+     */
+    @TableField(value = "start_ymd")
+    private Date startYmd;
+    
+    /**
+     * 卒業年月日
+     */
+    @TableField(value = "end_ymd")
+    private Date endYmd;
+    
     /**
      * 卒業学校
      */
     @TableField(value = "school_name")
     private String schoolName;
+    
+    /**
+    * 学部名称
+    */
+    @TableField(value = "faculty_name")
+   private String facultyName;
+
+   /**
+    * 学科名称
+    */
+    @TableField(value = "department")
+   private String department;
 
     /**
      * 作成日時

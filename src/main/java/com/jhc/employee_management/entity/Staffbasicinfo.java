@@ -1,11 +1,13 @@
 package com.jhc.employee_management.entity;
 
+import java.io.Serializable;
+import java.util.Date;
+
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.util.Date;
+
 import lombok.Data;
 
 /**
@@ -56,7 +58,13 @@ public class Staffbasicinfo implements Serializable {
      */
     @TableField(value = "photo")
     private String photo;
-
+    
+    /**
+     * 住所
+     */
+    @TableField(value = "address")
+    private String address;
+    
     /**
      * 作成日時
      */
