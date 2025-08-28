@@ -13,14 +13,21 @@ public class EmployeeInfoRequest {
 
 
 	/**
+     * 社員tableに状態
+     * 0：なし
+     * 1：存在
+     */
+    private String employeeStatus ;
+
+	/**
      * 社員ID
      */
     private Long id;
-
+    
     /**
      * 所属部門名
      */
-    private Long departmentName;
+    private String departmentName;
 
     /**
      * 従業員名
@@ -45,7 +52,7 @@ public class EmployeeInfoRequest {
     /**
      * 入社年月日
      */
-    private Date hireDate;
+    private String hireDate;
 
     /**
      * 役職
@@ -97,7 +104,7 @@ public class EmployeeInfoRequest {
     /**
      * 生年月日
      */
-    private Date birthday;
+    private String birthday;
 
     /**
      * 性別

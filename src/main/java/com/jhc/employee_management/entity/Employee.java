@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -21,7 +20,7 @@ public class Employee implements Serializable {
     /**
      * 社員ID
      */
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableId("id")
     private Long id;
 
     /**
@@ -110,7 +109,7 @@ public class Employee implements Serializable {
      */
     @TableField("self_pr")
     private String selfPr;
-    
+
     /**
      * 作成日時
      */
