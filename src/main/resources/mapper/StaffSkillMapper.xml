@@ -24,11 +24,22 @@
         WHERE id = #{id}
     </select>
     
-    <select id="selectByEmployeeId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <resultMap id="selectResultMap" type="com.jhc.employee_management.entity.StaffSkill">
+        <result column="skill_id" property="skillId" />
+        <result column="name" property="name" />
+        <result column="experience_level" property="experienceLevel" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+    </resultMap>
+    
+    <select id="selectByEmployeeId" parameterType="java.lang.Long" resultMap="selectResultMap">
         SELECT
-        <include refid="Base_Column_List" />
-        FROM staffskill
-        WHERE employee_id = #{employeeId}
+          B.id as skill_id,
+          B.name,
+          IFNULL(A.experience_level, 0) as experience_level
+        FROM skill B LEFT JOIN  staffskill A 
+          on B.id =  A.skill_id and A.employee_id = #{employeeId}
+          ORDER BY B.id
     </select>
     
     <insert id="insert" parameterType="com.jhc.employee_management.entity.StaffSkill" useGeneratedKeys="true" keyProperty="id">
@@ -52,7 +63,8 @@
 
     <delete id="deleteById" parameterType="java.lang.Long">
         DELETE FROM staffskill
-        WHERE id = #{id}
+        WHERE employee_id = #{employeeId}
     </delete>
+    
     
 </mapper>

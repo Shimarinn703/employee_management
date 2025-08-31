@@ -1,7 +1,7 @@
 package com.jhc.employee_management.mapper;
 
-import com.jhc.employee_management.entity.Staffbasicinfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.jhc.employee_management.entity.Staffbasicinfo;
 
 /**
 * @author 30839
@@ -11,8 +11,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface StaffbasicinfoMapper extends BaseMapper<Staffbasicinfo> {
 
+	//**  employee_idによりデータ検索
+	Staffbasicinfo selectByEmployeeId(long employeeId) ;
+	
+	//**  employee_idによりデータ更新
+	void updateByEmployeeId(Staffbasicinfo staffbasicinfo);
 }
-
-
-
 

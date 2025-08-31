@@ -1,7 +1,6 @@
 package com.jhc.employee_management.dto;
 
-import java.util.Date;
-import java.util.Map;
+import java.util.List;
 
 import lombok.Data;
 
@@ -102,6 +101,16 @@ public class EmployeeInfoRequest {
 /** Table staffbasicinfo 向け     */
     
     /**
+     * 状態
+     */
+    private String staffBasicInfoStaus;
+    
+    /**
+     * 生年月日
+     */
+    private String staffBasicInfoId;
+    
+    /**
      * 生年月日
      */
     private String birthday;
@@ -116,52 +125,31 @@ public class EmployeeInfoRequest {
      */
     private String address;
 
-/** Table staffEducation  向け     */
-    /**
-     * 入学年月日
-     */
-    private Date startYmd;
-    
-    /**
-     * 卒業年月日
-     */
-    private Date endYmd;
-    
     /**
      * 卒業学校
      */
-    private String schoolName;
+    private String education;
     
-    /**
-    * 学部名称
-    */
-   private String facultyName;
-
-   /**
-    * 学科名称
-    */
-   private String department;
-
     
 /** Table staffskill 向け         */
     
     /**
      * 社員スキルアップ
      */
-    Map <Integer, String> staffSkilMap;
+    private List<StaffSkillRequest> staffSkillRequestList;
 
 /** Table staffCategory 向け     */
     
     /**
      * 社員技術カテゴリマスタアップ
      */
-    Map <Long, String> staffCategoryMap;
+    private List<StaffCategoryRequest> staffCategoryList;
     
 /** Table staffProject 向け     */
     
     /**
      * 社員プロジェクトリストアップ
      */
-    Map <Long, String> staffProjectMap;
+    private List<String> staffProjectList;
 
 }

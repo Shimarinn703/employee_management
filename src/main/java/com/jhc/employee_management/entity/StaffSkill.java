@@ -27,19 +27,25 @@ public class StaffSkill implements Serializable {
      * 社員ID
      */
     @TableField(value = "employee_id")
-    private String employeeId;
+    private Long employeeId;
 
     /**
      * スキルID
      */
     @TableField(value = "skill_id")
-    private String skillId;
+    private Long skillId;
+
+    /**
+     * スキル名
+     */
+    @TableField(value = "name")
+    private String name;
 
     /**
      * 経験レベル
      */
     @TableField(value = "experience_level")
-    private String experienceLevel;
+    private Integer experienceLevel;
 
     /**
      * 作成日時

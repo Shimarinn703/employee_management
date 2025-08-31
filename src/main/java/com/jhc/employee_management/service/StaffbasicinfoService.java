@@ -1,7 +1,7 @@
 package com.jhc.employee_management.service;
 
-import com.jhc.employee_management.entity.Staffbasicinfo;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.jhc.employee_management.entity.Staffbasicinfo;
 
 /**
 * @author 30839
@@ -10,4 +10,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface StaffbasicinfoService extends IService<Staffbasicinfo> {
 
+	Staffbasicinfo getbyEmployeeId(long employeeId);
+
+	void updateByEmployeeId(Staffbasicinfo staffbasicinfo) ;
 }

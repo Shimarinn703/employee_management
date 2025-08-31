@@ -1,10 +1,13 @@
 package com.jhc.employee_management.service.impl;
 
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jhc.employee_management.entity.Staffbasicinfo;
-import com.jhc.employee_management.service.StaffbasicinfoService;
 import com.jhc.employee_management.mapper.StaffbasicinfoMapper;
-import org.springframework.stereotype.Service;
+import com.jhc.employee_management.service.StaffbasicinfoService;
 
 /**
 * @author 30839
@@ -14,7 +17,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class StaffbasicinfoServiceImpl extends ServiceImpl<StaffbasicinfoMapper, Staffbasicinfo>
     implements StaffbasicinfoService{
-
+	
+	@Resource
+	private StaffbasicinfoMapper staffbasicinfoMapper;
+	
+	@Override
+	public Staffbasicinfo getbyEmployeeId(long employeeId) {
+		return staffbasicinfoMapper.selectByEmployeeId(employeeId);
+		
+	}
+	
+	@Override
+	public void updateByEmployeeId(Staffbasicinfo staffbasicinfo) {
+		staffbasicinfoMapper.updateByEmployeeId(staffbasicinfo);
+		
+	}
 }
 
 

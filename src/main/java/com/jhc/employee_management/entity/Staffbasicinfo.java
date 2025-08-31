@@ -66,6 +66,12 @@ public class Staffbasicinfo implements Serializable {
     private String address;
     
     /**
+     * 卒業学校情報
+     */
+    @TableField(value = "education")
+    private String education;
+    
+    /**
      * 作成日時
      */
     @TableField(value = "created_at")
