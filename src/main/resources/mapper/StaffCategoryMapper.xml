@@ -11,6 +11,7 @@
         <result column="employee_id" property="employeeId" />
         <result column="get_ymd" property="getYmd" />
         <result column="category_id" property="categoryId" />
+        <result column="category_name" property="categoryName" />
         <result column="created_at" property="createdAt" />
         <result column="updated_at" property="updatedAt" />
         <result column="add1" property="add1" />
@@ -29,18 +30,26 @@
         WHERE id = #{id}
     </select>
     
-    <select id="selectByEmployeeId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <resultMap id="selectResultMap" type="com.jhc.employee_management.entity.StaffCategory">
+        <result column="category_id" property="categoryId" />
+        <result column="category_name" property="categoryName" />
+        <result column="get_ymd" property="getYmd" />
+    </resultMap>
+    
+    <select id="selectByEmployeeId" parameterType="java.lang.Long" resultMap="selectResultMap">
         SELECT
-        <include refid="Base_Column_List" />
+          category_id, 
+          category_name,
+          get_ymd
         FROM staffcategory
-        WHERE employee_id = #{employeeId}
+          WHERE employee_id = #{employeeId}
     </select>
     
     <insert id="insert" parameterType="com.jhc.employee_management.entity.StaffCategory" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO staffcategory (
-            employee_id, get_ymd, category_id, created_at, updated_at, add1, add2, add3
+            employee_id, get_ymd, category_id, category_name, created_at, updated_at, add1, add2, add3
         ) VALUES (
-            #{employeeId}, #{getYmd}, #{categoryCode}, #{createdAt}, #{updatedAt}, #{add1}, #{add2}, #{add3}
+            #{employeeId}, #{getYmd}, #{categoryId}, #{categoryName}, #{createdAt}, #{updatedAt}, #{add1}, #{add2}, #{add3}
         )
     </insert>
 
@@ -60,7 +69,7 @@
 
     <delete id="deleteById" parameterType="java.lang.Long">
         DELETE FROM staffcategory
-        WHERE id = #{id}
+          WHERE employee_id = #{employeeId}
     </delete>
     
 </mapper>

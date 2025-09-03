@@ -1,6 +1,7 @@
 package com.jhc.employee_management.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -54,7 +55,19 @@ public class StaffProject implements Serializable {
      */
     @TableField("project_role")
     private String projectRole;
-    
+
+    /**
+     * 作成日時
+     */
+    @TableField(value = "created_at")
+    private Date createdAt;
+
+    /**
+     * 更新日時
+     */
+    @TableField(value = "updated_at")
+    private Date updatedAt;
+
     @Override
     public boolean equals(Object that) {
         if (this == that) {

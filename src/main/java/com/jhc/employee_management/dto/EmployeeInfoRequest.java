@@ -143,13 +143,13 @@ public class EmployeeInfoRequest {
     /**
      * 社員技術カテゴリマスタアップ
      */
-    private List<StaffCategoryRequest> staffCategoryList;
+    private List<StaffCategoryRequest> staffCategoryRequestList;
     
 /** Table staffProject 向け     */
     
     /**
      * 社員プロジェクトリストアップ
      */
-    private List<String> staffProjectList;
+    private List<StaffProjectRequest> staffProjectRequestList;
 
 }

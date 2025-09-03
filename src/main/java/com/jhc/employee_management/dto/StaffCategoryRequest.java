@@ -4,9 +4,9 @@ import lombok.Data;
 
 @Data
 public class StaffCategoryRequest {
-	//**  スキル名
-    private String name;
+	//**  技術資格名
+    private String categoryName;
     
-    //**  経験レベル
-    private String date;
+    //**  取得年月日
+    private String getYmd;
 }

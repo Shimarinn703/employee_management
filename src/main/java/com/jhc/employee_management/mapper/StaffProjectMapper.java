@@ -1,5 +1,7 @@
 package com.jhc.employee_management.mapper;
 
+import java.util.List;
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.jhc.employee_management.entity.StaffProject;
 
@@ -11,4 +13,8 @@ import com.jhc.employee_management.entity.StaffProject;
 */
 public interface StaffProjectMapper extends BaseMapper<StaffProject> {
 
+	
+	List<StaffProject> selectByEmployeeId(long employeeId);
+	
+	void removeByEmployeeId(long employeeId) ;
 }

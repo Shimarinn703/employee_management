@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,12 +22,18 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jhc.employee_management.common.ApiResponse;
 import com.jhc.employee_management.dto.EmployeeInfoRequest;
 import com.jhc.employee_management.dto.LoginRequest;
+import com.jhc.employee_management.dto.StaffCategoryRequest;
+import com.jhc.employee_management.dto.StaffProjectRequest;
 import com.jhc.employee_management.dto.StaffSkillRequest;
 import com.jhc.employee_management.entity.Employee;
+import com.jhc.employee_management.entity.StaffCategory;
+import com.jhc.employee_management.entity.StaffProject;
 import com.jhc.employee_management.entity.StaffSkill;
 import com.jhc.employee_management.entity.Staffbasicinfo;
 import com.jhc.employee_management.entity.UserLoginInfo;
 import com.jhc.employee_management.service.EmployeeService;
+import com.jhc.employee_management.service.StaffCategoryService;
+import com.jhc.employee_management.service.StaffProjectService;
 import com.jhc.employee_management.service.StaffSkillService;
 import com.jhc.employee_management.service.StaffbasicinfoService;
 import com.jhc.employee_management.service.UserLoginInfoService;
@@ -49,7 +56,18 @@ public class EmployeePreviewEditController {
     
     @Resource
     private StaffSkillService staffSkillService;
+    
+    @Resource
+    private StaffProjectService staffProjectService;
+    
+    @Resource
+    private StaffCategoryService staffCategoryService;
 
+
+    private Map<String, Object> result = new HashMap<>();
+    
+
+    
     @PostMapping("/preview")
     public ResponseEntity<?> employeeInfoGet(@RequestBody LoginRequest request) {
     	
@@ -58,15 +76,207 @@ public class EmployeePreviewEditController {
     	//**  ログイン画面の情報より、社員ID取得
         UserLoginInfo userloginInfo = userLoginInfoService.getByUsername(request.getUsername());
 
-//**  Employeeから情報は画面に社員の情報を設定
-        Employee employeeInfo = employeeService.getById(Long.parseLong(userloginInfo.getEmployeeId()));
-        Map<String, Object> result = new HashMap<>();
+        //**  Employeeから情報は画面に社員の情報を設定
+        getFromEmployee(Long.parseLong(userloginInfo.getEmployeeId()));
+
+
+        //**  Staffbasicinfoから情報は画面に社員の情報を設定
+        getFromStaffbasicinfo(Long.parseLong(userloginInfo.getEmployeeId()));
+        
+        //**  StaffSkillから情報は画面に社員の情報を設定
+        getFromStaffSkill(Long.parseLong(userloginInfo.getEmployeeId()));
+
+        //**  StaffCategoryから情報は画面に社員のスキル情報を設定
+        getFromStaffCategory(Long.parseLong(userloginInfo.getEmployeeId()));
+        
+        //**   StaffProjectから情報は画面に社員のスキル情報を設定
+        getFromStaffProject(Long.parseLong(userloginInfo.getEmployeeId()));
+        
+        log.info("【employee_preview】社員情報の取得終了，ユーザー名：{}", request.getUsername());
+        return ResponseEntity.ok(ApiResponse.success("社員情報の取得完了", result));
+    }
+    
+
+    @Transactional
+    @PostMapping("/edit")
+    public ResponseEntity<?> employeeInfoEdit(@RequestBody EmployeeInfoRequest employeeInfoRequest) {
+    	
+
+        log.info("【employee_edit】社員情報の登録開始，社員ID：{}", employeeInfoRequest.getId());
+        
+    	//**  社員の情報かかわる項目の設定
+        insertIntoEmployee(employeeInfoRequest);
+ 
+        //**  社員基本情報かかわる項目の設定
+        insertIntoStaffbasicinfo(employeeInfoRequest);
+		
+        //**  社員スキル情報かかわる項目の設定
+        insertIntoStaffSkill(employeeInfoRequest);
+        
+        //**  社員スキル情報かかわる項目の設定
+        insertIntoStaffCategory(employeeInfoRequest);
+        
+        //**  社員スキル情報かかわる項目の設定
+        insertIntoStaffProject(employeeInfoRequest);
+        
+        log.info("【employee_edit】社員情報の登録完了，社員ID：{}", employeeInfoRequest.getId());
+		
+        return ResponseEntity.ok(ApiResponse.success("社員情報の保存完了", result));
+
+    }
+
+
+    /**
+     * StaffCategoryに社員の技術資格情報を登録
+     */
+    public void insertIntoStaffCategory(EmployeeInfoRequest employeeInfoRequest) {
+    	
+		Date now = new Date();
+        //**  社員技術資格情報かかわる項目の設定
+		staffCategoryService.removeByEmployeeId(employeeInfoRequest.getId());
+		Collection<StaffCategory> staffCategoryCollection = new HashSet<>();
+		for (StaffCategoryRequest staffCategoryrequest : employeeInfoRequest.getStaffCategoryRequestList()) {
+			StaffCategory staffCategory = new StaffCategory();
+
+	        //**  社員ID 
+			staffCategory.setEmployeeId(employeeInfoRequest.getId());
+
+	        //**  技術資格名 
+			staffCategory.setCategoryName(staffCategoryrequest.getCategoryName());
+
+	        //**  取得年月日 
+			staffCategory.setGetYmd(staffCategoryrequest.getGetYmd().replace("-", ""));
+			
+	        //**  作成＆更新時間 
+			staffCategory.setUpdatedAt(now);
+			staffCategory.setCreatedAt(now);
+			
+			
+			staffCategoryCollection.add(staffCategory);
+		}
+		
+		//**  全件データ社員技術資格情報に登録
+		staffCategoryService.saveBatch(staffCategoryCollection);
+        log.info("【employee_edit】社員技術資格情報の登録終了，社員ID：{}", employeeInfoRequest.getId());
+    }
+
+    /**
+     * StaffProjectに社員のプロジェクト情報を登録
+     */
+    public void insertIntoStaffProject(EmployeeInfoRequest employeeInfoRequest) {
+    	
+		Date now = new Date();
+        //**  社員スキル情報かかわる項目の設定
+		staffProjectService.removeByEmployeeId(employeeInfoRequest.getId());
+		Collection<StaffProject> staffProjectCollection = new HashSet<>();
+		for (StaffProjectRequest staffProjectrequest : employeeInfoRequest.getStaffProjectRequestList()) {
+			StaffProject staffProject = new StaffProject();
+
+	        //**  社員ID 
+			staffProject.setEmployeeId(employeeInfoRequest.getId());
+
+	        //**  プロジェクト名 
+			staffProject.setProjectName(staffProjectrequest.getProjectName());
+
+	        //**  開始年月 
+			staffProject.setProjectStart(staffProjectrequest.getProjectStart().replace("-", ""));
+
+	        //**  終了年月 
+			staffProject.setProjectEnd(staffProjectrequest.getProjectEnd().replace("-", ""));
+
+	        //**  役割
+			staffProject.setProjectRole(staffProjectrequest.getProjectRole());
+			
+	        //**  作成＆更新時間 
+			staffProject.setUpdatedAt(now);
+			staffProject.setCreatedAt(now);
+			
+			staffProjectCollection.add(staffProject);
+		}
+		
+		//**  全件データ社員スキル情報に登録
+		staffProjectService.saveBatch(staffProjectCollection);
+        log.info("【employee_edit】社員プロジェクト情報の登録終了，社員ID：{}", employeeInfoRequest.getId());
+    }
+    
+    /**
+     * StaffCategoryから情報は画面に社員のスキル情報を設定
+     */
+    public void getFromStaffCategory(Long employeeId) {
+    	
+    	
+        List<StaffCategory> staffCategoryList = staffCategoryService.getbyEmployeeId(employeeId);
+        
+        List<StaffCategoryRequest> staffCategoryRequestList = new ArrayList<StaffCategoryRequest>();
+        for (StaffCategory category : staffCategoryList) {
+        	StaffCategoryRequest staffCategoryRequest = new StaffCategoryRequest();
+        	
+        	//**  技術資格名
+        	staffCategoryRequest.setCategoryName(category.getCategoryName());
+        	
+        	//**  取得年月日
+        	String getYmd8 = category.getGetYmd();
+        	staffCategoryRequest.setGetYmd(getYmd8.substring(0,4) + "-" + getYmd8.substring(4,6) + "-" + getYmd8.substring(6,8));
+        	
+        	//**  追加
+        	staffCategoryRequestList.add(staffCategoryRequest);
+        }
+        //**  技術資格情報
+        result.put("staffCategoryRequestList", staffCategoryRequestList);
+        
+    }
+
+    
+    /**
+     * StaffProjectから情報は画面に社員のスキル情報を設定
+     */
+    public void getFromStaffProject(Long employeeId) {
+    	
+    	
+        List<StaffProject> staffProjectList = staffProjectService.getbyEmployeeId(employeeId);
+        
+        List<StaffProjectRequest> staffProjectRequestList = new ArrayList<>();
+        for (StaffProject project : staffProjectList) {
+
+        	StaffProjectRequest staffProjectRequest = new StaffProjectRequest();
+        	
+        	//**  プロジェクト名
+        	staffProjectRequest.setProjectName(project.getProjectName());
+        	
+        	//**  開始年月
+        	String strYmd8 = project.getProjectStart();
+        	staffProjectRequest.setProjectStart(strYmd8.substring(0,4) + "-" + strYmd8.substring(4,6) + "-" + strYmd8.substring(6,8));
+        	
+        	//**  終了年月
+        	strYmd8 = project.getProjectEnd();
+        	staffProjectRequest.setProjectEnd(strYmd8.substring(0,4) + "-" + strYmd8.substring(4,6) + "-" + strYmd8.substring(6,8));
+        	
+        	//**  プロジェクト役職
+        	staffProjectRequest.setProjectRole(project.getProjectRole());
+        	
+        	//**  追加
+        	staffProjectRequestList.add(staffProjectRequest);
+        }
+
+        //**  スキル情報
+        result.put("staffProjectRequestList", staffProjectRequestList);
+    	
+    }
+
+    
+    /**
+     * Employeeから情報は画面に社員の情報を設定
+     */
+    public void getFromEmployee(Long employeeId) {
+
+    	//**  Employeeから情報は画面に社員の情報を設定
+        Employee employeeInfo = employeeService.getById(employeeId);
+        //Map<String, Object> result = new HashMap<>();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         if (employeeInfo == null) {
 
-	        
 	        //**  社員ID 
-	        result.put("employeeId", userloginInfo.getEmployeeId());
+	        result.put("employeeId", employeeId);
 	        result.put("employeeStatus", "0");
         }
         else {
@@ -122,9 +332,19 @@ public class EmployeePreviewEditController {
 	        result.put("selfPr", employeeInfo.getSelfPr());
 	        
         }
+    }
+    
+    
+    /**
+     * Staffbasicinfoから情報は画面に社員の情報を設定
+     */
+    public void getFromStaffbasicinfo(Long employeeId) {
+    	
 
         //**  Staffbasicinfoから情報は画面に社員の情報を設定
-        Staffbasicinfo staffBasicInfo = basicinfoService.getbyEmployeeId(Long.parseLong(userloginInfo.getEmployeeId()));
+
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Staffbasicinfo staffBasicInfo = basicinfoService.getbyEmployeeId(employeeId);
         if (staffBasicInfo == null ) {
 
 	        //**  社員基本情報状態
@@ -151,9 +371,15 @@ public class EmployeePreviewEditController {
         }
         
 
-
-        //**  StaffSkillから情報は画面に社員の情報を設定
-        List<StaffSkill> staffSkillList = staffSkillService.getbyEmployeeId(Long.parseLong(userloginInfo.getEmployeeId()));
+    }
+    
+    /**
+     * StaffSkillから情報は画面に社員のスキル情報を設定
+     */
+    public void getFromStaffSkill(Long employeeId) {
+    	
+    	
+        List<StaffSkill> staffSkillList = staffSkillService.getbyEmployeeId(employeeId);
         
         List<StaffSkillRequest> staffSkillRequestList = new ArrayList<StaffSkillRequest>();
         for (StaffSkill skill : staffSkillList) {
@@ -174,22 +400,20 @@ public class EmployeePreviewEditController {
 
         //**  スキル情報
         result.put("staffSkillRequestList", staffSkillRequestList);
-   
-        
-        log.info("【employee_preview】社員情報の取得終了，ユーザー名：{}", request.getUsername());
-        return ResponseEntity.ok(ApiResponse.success("社員情報の取得完了", result));
+    	
     }
 
-    @PostMapping("/edit")
-    public ResponseEntity<?> employeeInfoEdit(@RequestBody EmployeeInfoRequest employeeInfoRequest) throws ParseException {
-    	
-
+    
+    /**
+     * Employeeに社員の情報を登録
+     */
+    public void insertIntoEmployee(EmployeeInfoRequest employeeInfoRequest) {
+    
         //**  画面に社員の情報を取得
         Employee employeeInfo = new Employee();
 		Date now = new Date();
-        log.info("【employee_edit】社員情報の登録開始，社員ID：{}", employeeInfoRequest.getId());
-        Map<String, Object> result = new HashMap<>();
-//**  社員の情報かかわる項目の設定
+      
+        //**  社員の情報かかわる項目の設定
         //**  社員ID 
 		employeeInfo.setId(employeeInfoRequest.getId());
 
@@ -210,7 +434,12 @@ public class EmployeePreviewEditController {
 		
         //**  入社年月日 
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-		employeeInfo.setHireDate(formatter.parse(employeeInfoRequest.getHireDate()));
+		try {
+			employeeInfo.setHireDate(formatter.parse(employeeInfoRequest.getHireDate()));
+		} catch (ParseException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
 
         //**  役職 
 		employeeInfo.setPosition(employeeInfoRequest.getPosition());
@@ -253,15 +482,29 @@ public class EmployeePreviewEditController {
 			employeeService.save(employeeInfo);
 	        log.info("【employee_edit】社員情報の登録終了，社員ID：{}", employeeInfoRequest.getId());
 		}
+    }
 
-//**  社員基本情報かかわる項目の設定
+    
+    /**
+     * Staffbasicinfoに社員の基本情報を登録
+     */
+    public void insertIntoStaffbasicinfo(EmployeeInfoRequest employeeInfoRequest) {
+    	
+
+		Date now = new Date();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		Staffbasicinfo staffbasicinfo = new Staffbasicinfo();
 
         //**  社員ID 
 		staffbasicinfo.setEmployeeId(employeeInfoRequest.getId());
 		
         //**  生年月日 
-		staffbasicinfo.setBirthday(formatter.parse(employeeInfoRequest.getBirthday()));
+		try {
+			staffbasicinfo.setBirthday(formatter.parse(employeeInfoRequest.getBirthday()));
+		} catch (ParseException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
 		
         //**  性別 
 		staffbasicinfo.setGender(employeeInfoRequest.getGender());
@@ -285,10 +528,16 @@ public class EmployeePreviewEditController {
 			basicinfoService.save(staffbasicinfo);
 	        log.info("【employee_edit】社員基本情報の登録終了，社員ID：{}", employeeInfoRequest.getId());
 		}
-		
-		
-
-//**  社員スキル情報かかわる項目の設定
+    }
+    
+    
+    /**
+     * StaffSkillに社員のスキル情報を登録
+     */
+    public void insertIntoStaffSkill(EmployeeInfoRequest employeeInfoRequest) {
+    	
+		Date now = new Date();
+        //**  社員スキル情報かかわる項目の設定
 		staffSkillService.removeByEmployeeId(employeeInfoRequest.getId());
 		Collection<StaffSkill> staffSkilCollection = new HashSet<>();
 		for (StaffSkillRequest staffSkillrequest : employeeInfoRequest.getStaffSkillRequestList()) {
@@ -312,9 +561,5 @@ public class EmployeePreviewEditController {
 		//**  全件データ社員スキル情報に登録
 		staffSkillService.saveBatch(staffSkilCollection);
         log.info("【employee_edit】社員スキル情報の登録終了，社員ID：{}", employeeInfoRequest.getId());
-		
-        return ResponseEntity.ok(ApiResponse.success("社員情報の保存完了", result));
-
     }
-
 }

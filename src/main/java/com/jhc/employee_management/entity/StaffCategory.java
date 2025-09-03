@@ -20,28 +20,34 @@ import lombok.Data;
 	@Data
 	public class StaffCategory implements Serializable {
 	    /**
-	     * 支店ID
+	     * ID
 	     */
 	    @TableId(value = "id", type = IdType.AUTO)
 	    private Long id;
 
 	    /**
-	     * 支店名
+	     * 社員ID
 	     */
 	    @TableField(value = "employee_id")
-	    private String employeeId;
+	    private Long employeeId;
 
 	    /**
-	     * 都市名
+	     * 技術資格ID
 	     */
 	    @TableField(value = "category_id")
 	    private String categoryId;
-
+	    
 	    /**
-	     * 都市コード
+	     * 技術資格名
+	     */
+	    @TableField("category_name")
+	    private String categoryName;
+	    
+	    /**
+	     * 取得年月日
 	     */
 	    @TableField(value = "get_ymd")
-	    private Date getYmd;
+	    private String getYmd;
 
 	    /**
 	     * 作成日時

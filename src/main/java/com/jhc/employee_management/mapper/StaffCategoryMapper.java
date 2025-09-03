@@ -1,5 +1,7 @@
 package com.jhc.employee_management.mapper;
 
+import java.util.List;
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.jhc.employee_management.entity.StaffCategory;
 
@@ -10,5 +12,9 @@ import com.jhc.employee_management.entity.StaffCategory;
 * @Entity com.jhc.employee_management.entity.StaffCategory
 */
 public interface StaffCategoryMapper extends BaseMapper<StaffCategory> {
-
+	
+	List<StaffCategory> selectByEmployeeId(long employeeId);
+	
+	void removeByEmployeeId(long employeeId) ;
 }
+
