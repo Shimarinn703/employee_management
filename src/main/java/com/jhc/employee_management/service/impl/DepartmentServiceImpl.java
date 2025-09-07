@@ -1,10 +1,15 @@
 package com.jhc.employee_management.service.impl;
 
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jhc.employee_management.entity.Department;
-import com.jhc.employee_management.service.DepartmentService;
 import com.jhc.employee_management.mapper.DepartmentMapper;
-import org.springframework.stereotype.Service;
+import com.jhc.employee_management.service.DepartmentService;
 
 /**
 * @author 30839
@@ -14,7 +19,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Department>
     implements DepartmentService{
-
+	
+	@Resource
+	private DepartmentMapper departmentMapper;
+	
+	@Override
+	public List<Department> getAllData() {
+		return departmentMapper.selectAllData();
+		
+	}
 }
 
 

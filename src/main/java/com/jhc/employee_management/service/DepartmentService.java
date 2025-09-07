@@ -1,7 +1,9 @@
 package com.jhc.employee_management.service;
 
-import com.jhc.employee_management.entity.Department;
+import java.util.List;
+
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.jhc.employee_management.entity.Department;
 
 /**
 * @author 30839
@@ -9,5 +11,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 * @createDate 2025-07-06 19:28:49
 */
 public interface DepartmentService extends IService<Department> {
-
+	List<Department> getAllData();
 }

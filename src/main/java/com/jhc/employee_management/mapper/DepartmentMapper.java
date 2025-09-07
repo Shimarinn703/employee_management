@@ -1,7 +1,9 @@
 package com.jhc.employee_management.mapper;
 
-import com.jhc.employee_management.entity.Department;
+import java.util.List;
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.jhc.employee_management.entity.Department;
 
 /**
 * @author 30839
@@ -10,9 +12,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.jhc.employee_management.entity.Department
 */
 public interface DepartmentMapper extends BaseMapper<Department> {
-
+	List<Department> selectAllData();
 }
-
-
-
-

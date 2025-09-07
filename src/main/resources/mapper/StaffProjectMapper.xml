@@ -53,7 +53,7 @@
 
     <delete id="deleteById" parameterType="java.lang.Long">
         DELETE FROM staffproject
-        WHERE project_id = #{id}
+        WHERE employee_id = #{employeeId}
     </delete>
     
 </mapper>

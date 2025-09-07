@@ -1,5 +1,9 @@
 package com.jhc.employee_management.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,12 +16,16 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.jhc.employee_management.common.ApiResponse;
 import com.jhc.employee_management.dto.EmployeeInfoRequest;
@@ -47,6 +55,12 @@ public class EmployeePreviewEditController {
 
     @Resource
     private UserLoginInfoService userLoginInfoService;
+
+    @Value("${file.upload-path}")
+    private String uploadDir;
+    
+    @Value("${file.access-path}")
+    private String accesdDir;
     
     @Resource
     private EmployeeService employeeService;
@@ -66,6 +80,21 @@ public class EmployeePreviewEditController {
 
     private Map<String, Object> result = new HashMap<>();
     
+//    @PostMapping("/upload")
+//    public Map<String, String> upload(@RequestParam("file") MultipartFile file) throws IOException {
+//        // 保存目录 (例如放在 static/images/upload/)
+//        String uploadDir = "src/main/resources/static/images/upload/";
+//        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+//        Path path = Paths.get(uploadDir + fileName);
+//
+//        Files.createDirectories(path.getParent());
+//        Files.write(path, file.getBytes());
+//
+//        // 返回图片的访问路径
+//        Map<String, String> result = new HashMap<>();
+//        result.put("path", "/images/upload/" + fileName);
+//        return result;
+//    }
 
     
     @PostMapping("/preview")
@@ -99,13 +128,15 @@ public class EmployeePreviewEditController {
 
     @Transactional
     @PostMapping("/edit")
-    public ResponseEntity<?> employeeInfoEdit(@RequestBody EmployeeInfoRequest employeeInfoRequest) {
+    public ResponseEntity<?> employeeInfoEdit(
+            @ModelAttribute EmployeeInfoRequest employeeInfoRequest,
+            @RequestParam(value = "photoFile", required = false) MultipartFile photoFile ) throws IOException {
     	
 
         log.info("【employee_edit】社員情報の登録開始，社員ID：{}", employeeInfoRequest.getId());
         
     	//**  社員の情報かかわる項目の設定
-        insertIntoEmployee(employeeInfoRequest);
+        insertIntoEmployee(employeeInfoRequest,photoFile);
  
         //**  社員基本情報かかわる項目の設定
         insertIntoStaffbasicinfo(employeeInfoRequest);
@@ -406,14 +437,24 @@ public class EmployeePreviewEditController {
     
     /**
      * Employeeに社員の情報を登録
+     * @throws IOException 
      */
-    public void insertIntoEmployee(EmployeeInfoRequest employeeInfoRequest) {
+    public void insertIntoEmployee(EmployeeInfoRequest employeeInfoRequest,MultipartFile photoFile) throws IOException {
     
         //**  画面に社員の情報を取得
         Employee employeeInfo = new Employee();
 		Date now = new Date();
+		
       
         //**  社員の情報かかわる項目の設定
+        if (photoFile != null && !photoFile.isEmpty()) {
+            String fileName = System.currentTimeMillis() + "_" + photoFile.getOriginalFilename();
+            Path path = Paths.get(uploadDir, fileName);
+            Files.createDirectories(path.getParent());
+            Files.write(path, photoFile.getBytes());
+            employeeInfo.setPhotoPath(accesdDir + fileName);
+        }
+		
         //**  社員ID 
 		employeeInfo.setId(employeeInfoRequest.getId());
 
@@ -462,9 +503,6 @@ public class EmployeePreviewEditController {
         //**  Teams ID 
 		employeeInfo.setTeamsId(employeeInfoRequest.getTeamsId());
 
-        //**  写真ファイルパス 
-		employeeInfo.setPhotoPath(employeeInfoRequest.getPhotoPath());
-
         //**  自己PR
 		employeeInfo.setSelfPr(employeeInfoRequest.getSelfPr());
 		
@@ -482,6 +520,7 @@ public class EmployeePreviewEditController {
 			employeeService.save(employeeInfo);
 	        log.info("【employee_edit】社員情報の登録終了，社員ID：{}", employeeInfoRequest.getId());
 		}
+		
     }
 
     

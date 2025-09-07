@@ -14,7 +14,21 @@
             <result property="add2" column="add2" />
             <result property="add3" column="add3" />
     </resultMap>
+    
+    <resultMap id="selectResultMap" type="com.jhc.employee_management.entity.Department">
+            <result property="branchId" column="branch_id" />
+            <result property="name" column="name" />
+    </resultMap>
 
+    
+    <select id="selectAllData" resultMap="selectResultMap">
+        SELECT
+          branch_id, 
+          name
+        FROM department
+          order by branchId
+    </select>
+    
     <sql id="Base_Column_List">
         id,branch_id,name,created_at,updated_at,add1,
         add2,add3

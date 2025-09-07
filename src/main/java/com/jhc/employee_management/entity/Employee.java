@@ -30,6 +30,12 @@ public class Employee implements Serializable {
     private Long departmentId;
 
     /**
+     * 所属部門名
+     */
+    //@TableField("department_name")
+    //private String departmentName;
+
+    /**
      * 従業員名
      */
     private String name;
