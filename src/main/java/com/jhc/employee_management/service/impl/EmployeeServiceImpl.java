@@ -1,10 +1,13 @@
 package com.jhc.employee_management.service.impl;
 
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jhc.employee_management.entity.Employee;
-import com.jhc.employee_management.service.EmployeeService;
 import com.jhc.employee_management.mapper.EmployeeMapper;
-import org.springframework.stereotype.Service;
+import com.jhc.employee_management.service.EmployeeService;
 
 /**
 * @author 30839
@@ -14,7 +17,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee>
     implements EmployeeService{
-
+	
+	@Resource
+	private EmployeeMapper employeeMapper;
+	
+	@Override
+	public Employee getbyEmployeeId(long employeeId) {
+		return employeeMapper.selectById(employeeId);
+		
+	}
+	
 }
 
 

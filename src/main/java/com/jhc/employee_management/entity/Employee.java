@@ -24,6 +24,18 @@ public class Employee implements Serializable {
     private Long id;
 
     /**
+     * 支店Id
+     */
+    @TableField("branch_id")
+    private Long branchId;
+
+    /**
+     * 支店名
+     */
+    @TableField(exist = false)
+    private String branchName;
+    
+    /**
      * 所属部門ID
      */
     @TableField("department_id")
@@ -32,12 +44,13 @@ public class Employee implements Serializable {
     /**
      * 所属部門名
      */
-    //@TableField("department_name")
-    //private String departmentName;
+    @TableField(exist = false)
+    private String departmentName;
 
     /**
      * 従業員名
      */
+    @TableField("name")
     private String name;
 
     /**
@@ -49,6 +62,7 @@ public class Employee implements Serializable {
     /**
      * メールアドレス
      */
+    @TableField("email")
     private String email;
 
     /**
@@ -66,6 +80,7 @@ public class Employee implements Serializable {
     /**
      * 役職
      */
+    @TableField("position")
     private String position;
 
     /**

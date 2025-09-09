@@ -1,7 +1,7 @@
 package com.jhc.employee_management.mapper;
 
-import com.jhc.employee_management.entity.Employee;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.jhc.employee_management.entity.Employee;
 
 /**
 * @author 30839
@@ -10,9 +10,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.jhc.employee_management.entity.Employee
 */
 public interface EmployeeMapper extends BaseMapper<Employee> {
-
+	Employee selectById(long employeeId);
 }
-
-
-
-

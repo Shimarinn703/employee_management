@@ -1,11 +1,13 @@
 package com.jhc.employee_management.entity;
 
+import java.io.Serializable;
+import java.util.Date;
+
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.util.Date;
+
 import lombok.Data;
 
 /**
@@ -24,14 +26,22 @@ public class Department implements Serializable {
     /**
      * 支店ID
      */
-    @TableField(value = "branch_id")
     private Long branchId;
+
+    /**
+     * 支店名
+     */
+    private String branchName;
+
+    /**
+     * 部署ID
+     */
+    private Long departmentId;
 
     /**
      * 部署名
      */
-    @TableField(value = "name")
-    private String name;
+    private String departmentName;
 
     /**
      * 作成日時
@@ -80,7 +90,7 @@ public class Department implements Serializable {
         Department other = (Department) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
             && (this.getBranchId() == null ? other.getBranchId() == null : this.getBranchId().equals(other.getBranchId()))
-            && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
+            && (this.getBranchName() == null ? other.getBranchName() == null : this.getBranchName().equals(other.getBranchName()))
             && (this.getCreatedAt() == null ? other.getCreatedAt() == null : this.getCreatedAt().equals(other.getCreatedAt()))
             && (this.getUpdatedAt() == null ? other.getUpdatedAt() == null : this.getUpdatedAt().equals(other.getUpdatedAt()))
             && (this.getAdd1() == null ? other.getAdd1() == null : this.getAdd1().equals(other.getAdd1()))
@@ -94,7 +104,7 @@ public class Department implements Serializable {
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((getBranchId() == null) ? 0 : getBranchId().hashCode());
-        result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
+        result = prime * result + ((getBranchName() == null) ? 0 : getBranchName().hashCode());
         result = prime * result + ((getCreatedAt() == null) ? 0 : getCreatedAt().hashCode());
         result = prime * result + ((getUpdatedAt() == null) ? 0 : getUpdatedAt().hashCode());
         result = prime * result + ((getAdd1() == null) ? 0 : getAdd1().hashCode());
@@ -111,7 +121,7 @@ public class Department implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", branchId=").append(branchId);
-        sb.append(", name=").append(name);
+        sb.append(", branchName=").append(branchName);
         sb.append(", createdAt=").append(createdAt);
         sb.append(", updatedAt=").append(updatedAt);
         sb.append(", add1=").append(add1);

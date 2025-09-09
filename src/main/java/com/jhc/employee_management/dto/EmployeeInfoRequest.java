@@ -24,6 +24,21 @@ public class EmployeeInfoRequest {
     private Long id;
     
     /**
+     * 支店ID
+     */
+    private Long branchId;
+    
+    /**
+     * 支店名
+     */
+    private String branchName;
+    
+    /**
+     * 所属部門ID
+     */
+    private Long departmentId;
+    
+    /**
      * 所属部門名
      */
     private String departmentName;

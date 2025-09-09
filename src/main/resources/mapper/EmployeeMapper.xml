@@ -6,6 +6,7 @@
 
     <resultMap id="BaseResultMap" type="com.jhc.employee_management.entity.Employee">
         <id column="id" property="id" />
+        <result column="branch_id" property="branchId" />
         <result column="department_id" property="departmentId" />
         <result column="name" property="name" />
         <result column="employee_level" property="employeeLevel" />
@@ -29,10 +30,69 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id, department_id, name, employee_level, email, phone_no,
+        id, branch_id,department_id, name, employee_level, email, phone_no,
         hire_date, position, employment_type, manager_name,
         emergency_contact, emergency_tel, slack_id, teams_id,
         photo_path, self_pr, created_at, updated_at, add1, add2, add3
     </sql>
 
+    <resultMap id="selectResultMap" type="com.jhc.employee_management.entity.Employee">
+        <id column="id" property="id" />
+        <result column="branch_id" property="branchId" />
+        <result column="branch_name" property="branchName" />
+        <result column="department_id" property="departmentId" />
+        <result column="department_name" property="departmentName" />
+        <result column="name" property="name" />
+        <result column="employee_level" property="employeeLevel" />
+        <result column="email" property="email" />
+        <result column="phone_no" property="phoneNo" />
+        <result column="hire_date" property="hireDate" />
+        <result column="position" property="position" />
+        <result column="employment_type" property="employmentType" />
+        <result column="manager_name" property="managerName" />
+        <result column="emergency_contact" property="emergencyContact" />
+        <result column="emergency_tel" property="emergencyTel" />
+        <result column="slack_id" property="slackId" />
+        <result column="teams_id" property="teamsId" />
+        <result column="photo_path" property="photoPath" />
+        <result column="self_pr" property="selfPr" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+        <result column="add1" property="add1" />
+        <result column="add2" property="add2" />
+        <result column="add3" property="add3" />
+    </resultMap>
+    
+    
+    <select id="selectById" parameterType="java.lang.Long" resultMap="selectResultMap">
+        SELECT
+	        A.id,
+			C.id as branch_id,
+			B.id as department_id,
+			C.name as branch_name,
+			B.name as department_name,
+			A.name,
+			A.employee_level,
+			A.email,
+			A.phone_no,
+			A.hire_date,
+			A.position,
+			A.employment_type,
+			A.manager_name,
+			A.emergency_contact,
+			A.emergency_tel,
+			A.slack_id,
+			A.teams_id,
+			A.photo_path,
+			A.self_pr,
+			A.created_at,
+			A.updated_at,
+			A.add1,
+			A.add2,
+			A.add3
+        FROM employee A left join department B on a.department_id = b.id
+             left join branch C on a.branch_id = C.id
+            WHERE A.id = #{id}
+    </select>
+    
 </mapper>

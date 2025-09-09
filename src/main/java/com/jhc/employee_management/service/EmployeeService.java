@@ -9,5 +9,5 @@ import com.jhc.employee_management.entity.Employee;
 * @createDate 2025-07-06 19:28:49
 */
 public interface EmployeeService extends IService<Employee> {
-	
+	Employee getbyEmployeeId(long employeeId);
 }

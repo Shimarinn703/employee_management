@@ -16,17 +16,21 @@
     </resultMap>
     
     <resultMap id="selectResultMap" type="com.jhc.employee_management.entity.Department">
-            <result property="branchId" column="branch_id" />
-            <result property="name" column="name" />
+            <result property="branch_id" column="branchId" />
+            <result property="branch_name" column="branchName" />
+            <result property="department_id" column="departmentId" />
+            <result property="department_name" column="departmentName" />
     </resultMap>
 
     
     <select id="selectAllData" resultMap="selectResultMap">
         SELECT
-          branch_id, 
-          name
-        FROM department
-          order by branchId
+          A.id as branch_id, 
+          A.name as branch_name, 
+          B.id as department_id, 
+          B.name as department_name
+        FROM Branch A left join department B on A.id = B.branch_id
+          order by A.id, B.id
     </select>
     
     <sql id="Base_Column_List">

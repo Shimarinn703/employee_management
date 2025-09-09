@@ -28,17 +28,20 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.jhc.employee_management.common.ApiResponse;
+import com.jhc.employee_management.dto.DepartmentRequest;
 import com.jhc.employee_management.dto.EmployeeInfoRequest;
 import com.jhc.employee_management.dto.LoginRequest;
 import com.jhc.employee_management.dto.StaffCategoryRequest;
 import com.jhc.employee_management.dto.StaffProjectRequest;
 import com.jhc.employee_management.dto.StaffSkillRequest;
+import com.jhc.employee_management.entity.Department;
 import com.jhc.employee_management.entity.Employee;
 import com.jhc.employee_management.entity.StaffCategory;
 import com.jhc.employee_management.entity.StaffProject;
 import com.jhc.employee_management.entity.StaffSkill;
 import com.jhc.employee_management.entity.Staffbasicinfo;
 import com.jhc.employee_management.entity.UserLoginInfo;
+import com.jhc.employee_management.service.DepartmentService;
 import com.jhc.employee_management.service.EmployeeService;
 import com.jhc.employee_management.service.StaffCategoryService;
 import com.jhc.employee_management.service.StaffProjectService;
@@ -76,25 +79,12 @@ public class EmployeePreviewEditController {
     
     @Resource
     private StaffCategoryService staffCategoryService;
+    
+    @Resource
+    private DepartmentService departmentService;
 
 
     private Map<String, Object> result = new HashMap<>();
-    
-//    @PostMapping("/upload")
-//    public Map<String, String> upload(@RequestParam("file") MultipartFile file) throws IOException {
-//        // 保存目录 (例如放在 static/images/upload/)
-//        String uploadDir = "src/main/resources/static/images/upload/";
-//        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-//        Path path = Paths.get(uploadDir + fileName);
-//
-//        Files.createDirectories(path.getParent());
-//        Files.write(path, file.getBytes());
-//
-//        // 返回图片的访问路径
-//        Map<String, String> result = new HashMap<>();
-//        result.put("path", "/images/upload/" + fileName);
-//        return result;
-//    }
 
     
     @PostMapping("/preview")
@@ -121,10 +111,45 @@ public class EmployeePreviewEditController {
         //**   StaffProjectから情報は画面に社員のスキル情報を設定
         getFromStaffProject(Long.parseLong(userloginInfo.getEmployeeId()));
         
+        //**   departmentから情報は画面に社員のスキル情報を設定
+        getFromDepartment();
+        
         log.info("【employee_preview】社員情報の取得終了，ユーザー名：{}", request.getUsername());
         return ResponseEntity.ok(ApiResponse.success("社員情報の取得完了", result));
     }
     
+    
+    /**
+     * departmentから情報は画面に社員のスキル情報を設定
+     */
+    public void getFromDepartment() {
+    	
+    	
+        List<Department> departmentList = departmentService.getAllData();
+        
+        List<DepartmentRequest> departmentRequestList = new ArrayList<DepartmentRequest>();
+        for (Department department : departmentList) {
+        	DepartmentRequest departmentRequest = new DepartmentRequest();
+        	
+        	//**  支店ID
+        	departmentRequest.setBranchId(department.getBranchId());
+        	
+        	//**  支店名
+        	departmentRequest.setBranchName(department.getBranchName());
+        	
+        	//**  部署ID
+        	departmentRequest.setDepartmentId(department.getDepartmentId());
+        	
+        	//**  部署名
+        	departmentRequest.setDepartmentName(department.getDepartmentName());
+        	
+        	//**  追加
+        	departmentRequestList.add(departmentRequest);
+        }
+        //**  部署情報
+        result.put("departmentRequestList", departmentRequestList);
+        
+    }
 
     @Transactional
     @PostMapping("/edit")
@@ -301,24 +326,38 @@ public class EmployeePreviewEditController {
     public void getFromEmployee(Long employeeId) {
 
     	//**  Employeeから情報は画面に社員の情報を設定
-        Employee employeeInfo = employeeService.getById(employeeId);
+        Employee employeeInfo = employeeService.getbyEmployeeId(employeeId);
         //Map<String, Object> result = new HashMap<>();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         if (employeeInfo == null) {
 
 	        //**  社員ID 
-	        result.put("employeeId", employeeId);
+	        String strId = "0000"+ employeeId.toString();
+	        strId = strId.substring(strId.length()-4);
+	        result.put("employeeId", strId);
 	        result.put("employeeStatus", "0");
         }
         else {
 
 	        //**  社員状態 
 	        result.put("employeeStatus", "1");
+	        
 	        //**  社員ID 
-	        result.put("employeeId", employeeInfo.getId());
+	        String strId = "0000"+ employeeInfo.getId().toString();
+	        strId = strId.substring(strId.length()-4);
+	        result.put("employeeId", strId);
+	        
+	        //**  支店ID 
+	        result.put("branchId", employeeInfo.getBranchId());
+	
+	        //**  所属部門ID 
+	        result.put("departmentId", employeeInfo.getDepartmentId());
+	        
+	        //**  支店名 
+	        result.put("branchName", employeeInfo.getBranchName());
 	
 	        //**  所属部門名 
-	        result.put("DepartmentName", employeeInfo.getDepartmentId());
+	        result.put("departmentName", employeeInfo.getDepartmentName());
 	
 	        //**  従業員名 
 	        result.put("name", employeeInfo.getName());
@@ -458,14 +497,17 @@ public class EmployeePreviewEditController {
         //**  社員ID 
 		employeeInfo.setId(employeeInfoRequest.getId());
 
-        //**  所属部門名 
-		employeeInfo.setDepartmentId(Long.parseLong("1"));
+        //**  支店Id 
+		employeeInfo.setBranchId(employeeInfoRequest.getBranchId());
+
+        //**  所属部門Id 
+		employeeInfo.setDepartmentId(employeeInfoRequest.getDepartmentId());
 
         //**  従業員名 
 		employeeInfo.setName(employeeInfoRequest.getName());
 
         //**  従業員レベル 
-		employeeInfo.setEmployeeLevel(employeeInfoRequest.getEmployeeLevel());
+		//employeeInfo.setEmployeeLevel(employeeInfoRequest.getEmployeeLevel());
 
         //**  メールアドレス 
 		employeeInfo.setEmail(employeeInfoRequest.getEmail());
