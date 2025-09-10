@@ -41,6 +41,7 @@ import com.jhc.employee_management.entity.StaffProject;
 import com.jhc.employee_management.entity.StaffSkill;
 import com.jhc.employee_management.entity.Staffbasicinfo;
 import com.jhc.employee_management.entity.UserLoginInfo;
+import com.jhc.employee_management.entity.UserPermissions;
 import com.jhc.employee_management.service.DepartmentService;
 import com.jhc.employee_management.service.EmployeeService;
 import com.jhc.employee_management.service.StaffCategoryService;
@@ -48,6 +49,7 @@ import com.jhc.employee_management.service.StaffProjectService;
 import com.jhc.employee_management.service.StaffSkillService;
 import com.jhc.employee_management.service.StaffbasicinfoService;
 import com.jhc.employee_management.service.UserLoginInfoService;
+import com.jhc.employee_management.service.UserPermissionsService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -82,10 +84,29 @@ public class EmployeePreviewEditController {
     
     @Resource
     private DepartmentService departmentService;
+    
+    @Resource
+    private UserPermissionsService userPermissionsService;
 
 
     private Map<String, Object> result = new HashMap<>();
 
+
+    
+    @PostMapping("/top")
+    public ResponseEntity<?> userInfoGet(@RequestBody LoginRequest request) {
+    	
+        log.info("【employee_preview】社員情報の取得開始，ユーザー名：{}", request.getUsername());
+    	result.clear();
+    	//**  ログイン画面の情報より、社員ID取得
+        UserLoginInfo userloginInfo = userLoginInfoService.getByUsername(request.getUsername());
+        
+        //**  ユーザー権限取得
+        UserPermissions userPermissions = userPermissionsService.getByEmployeeId(userloginInfo.getEmployeeId());
+        result.put("permissionsLevel", userPermissions.getPermissionLevel());
+
+        return ResponseEntity.ok(ApiResponse.success("ユーザー情報の取得完了", result));
+    }
     
     @PostMapping("/preview")
     public ResponseEntity<?> employeeInfoGet(@RequestBody LoginRequest request) {
@@ -94,7 +115,11 @@ public class EmployeePreviewEditController {
         log.info("【employee_preview】社員情報の取得開始，ユーザー名：{}", request.getUsername());
     	//**  ログイン画面の情報より、社員ID取得
         UserLoginInfo userloginInfo = userLoginInfoService.getByUsername(request.getUsername());
-
+        
+        //**  ユーザー権限取得
+        UserPermissions userPermissions=userPermissionsService.getByEmployeeId(userloginInfo.getEmployeeId());
+        result.put("permissionsLevel", userPermissions.getPermissionLevel());
+        
         //**  Employeeから情報は画面に社員の情報を設定
         getFromEmployee(Long.parseLong(userloginInfo.getEmployeeId()));
 
@@ -118,39 +143,6 @@ public class EmployeePreviewEditController {
         return ResponseEntity.ok(ApiResponse.success("社員情報の取得完了", result));
     }
     
-    
-    /**
-     * departmentから情報は画面に社員のスキル情報を設定
-     */
-    public void getFromDepartment() {
-    	
-    	
-        List<Department> departmentList = departmentService.getAllData();
-        
-        List<DepartmentRequest> departmentRequestList = new ArrayList<DepartmentRequest>();
-        for (Department department : departmentList) {
-        	DepartmentRequest departmentRequest = new DepartmentRequest();
-        	
-        	//**  支店ID
-        	departmentRequest.setBranchId(department.getBranchId());
-        	
-        	//**  支店名
-        	departmentRequest.setBranchName(department.getBranchName());
-        	
-        	//**  部署ID
-        	departmentRequest.setDepartmentId(department.getDepartmentId());
-        	
-        	//**  部署名
-        	departmentRequest.setDepartmentName(department.getDepartmentName());
-        	
-        	//**  追加
-        	departmentRequestList.add(departmentRequest);
-        }
-        //**  部署情報
-        result.put("departmentRequestList", departmentRequestList);
-        
-    }
-
     @Transactional
     @PostMapping("/edit")
     public ResponseEntity<?> employeeInfoEdit(
@@ -182,6 +174,8 @@ public class EmployeePreviewEditController {
     }
 
 
+    
+    
     /**
      * StaffCategoryに社員の技術資格情報を登録
      */
@@ -214,6 +208,38 @@ public class EmployeePreviewEditController {
 		//**  全件データ社員技術資格情報に登録
 		staffCategoryService.saveBatch(staffCategoryCollection);
         log.info("【employee_edit】社員技術資格情報の登録終了，社員ID：{}", employeeInfoRequest.getId());
+    }
+
+    /**
+     * departmentから情報は画面に社員のスキル情報を設定
+     */
+    public void getFromDepartment() {
+    	
+    	
+        List<Department> departmentList = departmentService.getAllData();
+        
+        List<DepartmentRequest> departmentRequestList = new ArrayList<DepartmentRequest>();
+        for (Department department : departmentList) {
+        	DepartmentRequest departmentRequest = new DepartmentRequest();
+        	
+        	//**  支店ID
+        	departmentRequest.setBranchId(department.getBranchId());
+        	
+        	//**  支店名
+        	departmentRequest.setBranchName(department.getBranchName());
+        	
+        	//**  部署ID
+        	departmentRequest.setDepartmentId(department.getDepartmentId());
+        	
+        	//**  部署名
+        	departmentRequest.setDepartmentName(department.getDepartmentName());
+        	
+        	//**  追加
+        	departmentRequestList.add(departmentRequest);
+        }
+        //**  部署情報
+        result.put("departmentRequestList", departmentRequestList);
+        
     }
 
     /**
