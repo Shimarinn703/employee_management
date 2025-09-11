@@ -100,6 +100,7 @@ public class EmployeePreviewEditController {
     	result.clear();
     	//**  ログイン画面の情報より、社員ID取得
         UserLoginInfo userloginInfo = userLoginInfoService.getByUsername(request.getUsername());
+        result.put("employeeId", userloginInfo.getEmployeeId());
         
         //**  ユーザー権限取得
         UserPermissions userPermissions = userPermissionsService.getByEmployeeId(userloginInfo.getEmployeeId());
@@ -115,10 +116,6 @@ public class EmployeePreviewEditController {
         log.info("【employee_preview】社員情報の取得開始，ユーザー名：{}", request.getUsername());
     	//**  ログイン画面の情報より、社員ID取得
         UserLoginInfo userloginInfo = userLoginInfoService.getByUsername(request.getUsername());
-        
-        //**  ユーザー権限取得
-        UserPermissions userPermissions=userPermissionsService.getByEmployeeId(userloginInfo.getEmployeeId());
-        result.put("permissionsLevel", userPermissions.getPermissionLevel());
         
         //**  Employeeから情報は画面に社員の情報を設定
         getFromEmployee(Long.parseLong(userloginInfo.getEmployeeId()));
@@ -188,21 +185,22 @@ public class EmployeePreviewEditController {
 		for (StaffCategoryRequest staffCategoryrequest : employeeInfoRequest.getStaffCategoryRequestList()) {
 			StaffCategory staffCategory = new StaffCategory();
 
-	        //**  社員ID 
-			staffCategory.setEmployeeId(employeeInfoRequest.getId());
-
-	        //**  技術資格名 
-			staffCategory.setCategoryName(staffCategoryrequest.getCategoryName());
-
-	        //**  取得年月日 
-			staffCategory.setGetYmd(staffCategoryrequest.getGetYmd().replace("-", ""));
-			
-	        //**  作成＆更新時間 
-			staffCategory.setUpdatedAt(now);
-			staffCategory.setCreatedAt(now);
-			
-			
-			staffCategoryCollection.add(staffCategory);
+			if (!staffCategoryrequest.getCategoryName().isEmpty()) {
+		        //**  社員ID 
+				staffCategory.setEmployeeId(employeeInfoRequest.getId());
+	
+		        //**  技術資格名 
+				staffCategory.setCategoryName(staffCategoryrequest.getCategoryName());
+	
+		        //**  取得年月日 
+				staffCategory.setGetYmd(staffCategoryrequest.getGetYmd().replace("-", ""));
+				
+		        //**  作成＆更新時間 
+				staffCategory.setUpdatedAt(now);
+				staffCategory.setCreatedAt(now);
+				
+				staffCategoryCollection.add(staffCategory);
+			}
 		}
 		
 		//**  全件データ社員技術資格情報に登録
@@ -254,6 +252,7 @@ public class EmployeePreviewEditController {
 		for (StaffProjectRequest staffProjectrequest : employeeInfoRequest.getStaffProjectRequestList()) {
 			StaffProject staffProject = new StaffProject();
 
+			if (!staffProjectrequest.getProjectName().isEmpty()) {
 	        //**  社員ID 
 			staffProject.setEmployeeId(employeeInfoRequest.getId());
 
@@ -274,6 +273,7 @@ public class EmployeePreviewEditController {
 			staffProject.setCreatedAt(now);
 			
 			staffProjectCollection.add(staffProject);
+			}
 		}
 		
 		//**  全件データ社員スキル情報に登録
