@@ -33,7 +33,8 @@ public class JwtFilter extends OncePerRequestFilter {
             "/auth/captcha",
             "/public/",        // 静态资源
             "/favicon.ico",
-            "/img/upload/"
+            "/upload/img/upload/",
+            "/access/img/upload/"
     );
 
     @Override
