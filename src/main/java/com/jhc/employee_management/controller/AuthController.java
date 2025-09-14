@@ -20,7 +20,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -121,11 +120,14 @@ public class AuthController {
         user.setEmployeeId(employeeId);
 
         userLoginInfoService.save(user);
+        int level = (request.getRole() != null && (request.getRole() == 1 || request.getRole() == 2))
+                ? request.getRole()
+                : 1;
 
         // 同时写入权限表（默认普通用户）
         UserPermissions permissions = new UserPermissions();
         permissions.setEmployeeId(employeeId);
-        permissions.setPermissionLevel(1);
+        permissions.setPermissionLevel(level);
         permissions.setUpdatedAt(new Date());
 
         userPermissionsService.save(permissions);
@@ -136,6 +138,11 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request) {
+        String username = null;
+        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+            username = SecurityContextHolder.getContext().getAuthentication().getName();
+        }
+        log.info("【LOGOUT】退出请求：用户名={}", username);
         final String authHeader = request.getHeader("Authorization");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
@@ -146,6 +153,7 @@ public class AuthController {
             } catch (Exception ignored) {}
         }
         SecurityContextHolder.clearContext();
+        log.info("【LOGOUT】退出成功：用户名={}", username);
         return ResponseEntity.ok(ApiResponse.success("ログアウト成功", null));
     }
    

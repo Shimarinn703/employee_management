@@ -32,7 +32,8 @@ public class JwtFilter extends OncePerRequestFilter {
             "/auth/register",
             "/auth/captcha",
             "/public/",        // 静态资源
-            "/favicon.ico"
+            "/favicon.ico",
+            "/img/upload/"
     );
 
     @Override
@@ -46,7 +47,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String contextPath = request.getContextPath();
         String path = request.getRequestURI().substring(contextPath.length());
         for (String p : EXCLUDE_PATHS) {
-            if (path.startsWith(p)) {
+            if (path.equals(p) || path.startsWith(p)) {
                 chain.doFilter(request, response);
                 return;
             }
