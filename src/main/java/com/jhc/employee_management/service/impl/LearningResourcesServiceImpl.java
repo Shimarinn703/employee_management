@@ -1,24 +1,43 @@
 package com.jhc.employee_management.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.jhc.employee_management.dto.LearningRequest;
-import com.jhc.employee_management.entity.Employee;
-import com.jhc.employee_management.mapper.EmployeeMapper;
-import com.jhc.employee_management.mapper.LearningResourcesMapper;
-import com.jhc.employee_management.service.LearningResourcesService;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import java.time.LocalDateTime;
+import com.jhc.employee_management.dto.PageResult;
+import com.jhc.employee_management.entity.LearningResources;
+import com.jhc.employee_management.mapper.LearningResourcesMapper;
+import com.jhc.employee_management.service.LearningResourcesService;
 
 @Service
-public class LearningResourcesServiceImpl extends ServiceImpl<EmployeeMapper, Employee>
-        implements LearningResourcesService {
-    @Resource
+public class LearningResourcesServiceImpl implements LearningResourcesService {
+    
+    @Autowired
     private LearningResourcesMapper learningResourcesMapper;
-
+    //0918whm：分页查询
     @Override
-    public void creatLearning(LearningRequest learningRequest) {
-        learningResourcesMapper.creatLearning(learningRequest);
+    public PageResult<LearningResources> getPagedResources(int page, int size) {
+        int offset = (page - 1) * size;
+        
+        List<LearningResources> items = learningResourcesMapper.selectByPage(offset, size);
+        int totalItems = learningResourcesMapper.countAll();
+        
+        return new PageResult<>(items, page, size, totalItems);
+    }
+  //0918whm：创建数据
+    @Override
+    public LearningResources createResource(LearningResources resource) {
+        resource.setCreatedAt(new Date());
+        resource.setUpdatedAt(new Date());
+        
+        learningResourcesMapper.creatLearning(resource);
+        return resource;
+    }
+    
+    @Override
+    public int countAll() {
+        return learningResourcesMapper.countAll();
     }
 }
