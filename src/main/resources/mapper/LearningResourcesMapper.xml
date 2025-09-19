@@ -15,9 +15,21 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,title,link,creatorId,created_at,updated_at
+        id,title,link,creator_id,created_at,updated_at
     </sql>
     <insert id="creatLearning" parameterType="com.jhc.employee_management.entity.LearningResources">
         insert into learning_resources (title,link,creator_id,created_at,updated_at) values (#{title}, #{link}, #{creatorId}, NOW(), NOW())
     </insert>
+       <!--0918whm 分页查询 -->
+    <select id="selectByPage" resultMap="BaseResultMap">
+        SELECT 
+            <include refid="Base_Column_List" />
+        FROM learning_resources
+        ORDER BY created_at DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+    <!-- 0918whm 统计总数 -->
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*) FROM learning_resources
+    </select>
 </mapper>
