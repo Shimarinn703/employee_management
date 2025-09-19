@@ -1,11 +1,13 @@
 package com.jhc.employee_management.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.jhc.employee_management.dto.LearningRequest;
-import com.jhc.employee_management.entity.Employee;
+import java.util.List;
 
-import java.time.LocalDateTime;
+import org.apache.ibatis.annotations.Param;
 
-public interface LearningResourcesMapper extends BaseMapper<Employee> {
-    void creatLearning(LearningRequest learningRequest);
+import com.jhc.employee_management.entity.LearningResources;
+//0918whm:分页查询修改
+public interface LearningResourcesMapper {
+    int creatLearning(LearningResources resource);
+    List<LearningResources> selectByPage(@Param("offset") int offset, @Param("pageSize") int pageSize);
+    int countAll();
 }
