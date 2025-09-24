@@ -30,7 +30,7 @@ public class LearningResourcesServiceImpl implements LearningResourcesService {
     @Override
     public LearningResources createResource(LearningResources resource) {
         resource.setCreatedAt(new Date());
-        resource.setUpdatedAt(new Date());
+        //resource.setUpdatedAt(new Date());
         
         learningResourcesMapper.creatLearning(resource);
         return resource;

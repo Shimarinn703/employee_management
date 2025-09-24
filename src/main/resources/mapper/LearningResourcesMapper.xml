@@ -14,17 +14,34 @@
 
     </resultMap>
 
+    <resultMap id="selectResultMap" type="com.jhc.employee_management.entity.LearningResources">
+        <id property="id" column="id" />
+        <result property="title" column="title" />
+        <result property="link" column="link" />
+        <result property="creatorId" column="creator_id" />
+        <result property="creatorName" column="creator_name" />
+        <result property="createdAt" column="created_at" />
+        <result property="updatedAt" column="updated_at" />
+
+    </resultMap>
     <sql id="Base_Column_List">
         id,title,link,creator_id,created_at,updated_at
     </sql>
+
     <insert id="creatLearning" parameterType="com.jhc.employee_management.entity.LearningResources">
         insert into learning_resources (title,link,creator_id,created_at,updated_at) values (#{title}, #{link}, #{creatorId}, NOW(), NOW())
     </insert>
-       <!--0918whm 分页查询 -->
-    <select id="selectByPage" resultMap="BaseResultMap">
+    <!--0918whm 分页查询 -->
+    <select id="selectByPage" resultMap="selectResultMap">
         SELECT 
-            <include refid="Base_Column_List" />
-        FROM learning_resources
+            A.id,
+            A.title,
+            A.link,
+            A.creator_id,
+            B.username as creator_name,
+            A.created_at,
+            A.updated_at
+        FROM learning_resources A left join user_login_info B on a.creator_id = b.employee_id
         ORDER BY created_at DESC
         LIMIT #{offset}, #{pageSize}
     </select>
