@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jhc.employee_management.mapper.TrainingInfoMapper">
+
+  <!-- 公共字段映射 -->
+  <resultMap id="BaseResultMap" type="com.jhc.employee_management.entity.TrainingInfo">
+    <id column="id" property="id" />
+    <result column="title" property="title" />
+    <result column="training_date" property="trainingDate" />
+    <result column="instructor" property="instructor" />
+    <result column="location" property="location" />
+    <result column="description" property="description" />
+    <result column="creator_id" property="creatorId" />
+    <result column="created_at" property="createdAt" />
+    <result column="updated_at" property="updatedAt" />
+  </resultMap>
+
+  <!-- 公共列 -->
+  <sql id="Base_Column_List">
+    A.id, A.title, A.training_date, A.instructor, A.location, A.description, A.creator_id, A.created_at, A.updated_at
+  </sql>
+  
+ <!-- All 取得 -->
+  <select id="selectByPage" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>,
+      B.username as creator_name
+    FROM training_info A left join user_login_info B on a.creator_id = b.employee_id
+    ORDER BY training_date desc
+    LIMIT #{offset}, #{pageSize}
+  </select>
+  
+   <select id="countAll" resultType="long">
+        SELECT COUNT(*) FROM training_info
+    </select>
+</mapper>

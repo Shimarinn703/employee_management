@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jhc.employee_management.mapper.SkillQuestionMapper">
+
+    <!-- Base_Column_List -->
+    <sql id="Base_Column_List">
+        id, content, creator_id, is_resolved, created_at, updated_at
+    </sql>
+
+    <!-- BaseResultMap -->
+    <resultMap id="BaseResultMap" type="com.jhc.employee_management.entity.SkillQuestion">
+        <id column="id" property="id"/>
+        <result column="content" property="content"/>
+        <result column="creator_id" property="creatorId"/>
+        <result column="is_resolved" property="isResolved"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <!-- 一对多映射 -->
+    <resultMap id="QuestionWithAnswersMap" type="com.jhc.employee_management.entity.SkillQuestion">
+        <id property="id" column="q_id"/>
+        <result property="content" column="q_content"/>
+        <result property="creatorId" column="q_creator_id"/>
+        <result property="creatorName" column="q_creator_name"/>
+        <result property="isResolved" column="q_is_resolved"/>
+        <result property="createdAt" column="q_created_at"/>
+        <result property="updatedAt" column="q_updated_at"/>
+
+        <collection property="answers" ofType="com.jhc.employee_management.entity.SkillAnswer">
+            <id property="id" column="a_id"/>
+            <result property="questionId" column="a_question_id"/>
+            <result property="content" column="a_content"/>
+            <result property="likeCount" column="a_like_count"/>
+            <result property="creatorName" column="a_creator_name"/>
+            <result property="creatorId" column="a_creator_id"/>
+            <result property="createdAt" column="a_created_at"/>
+            <result property="updatedAt" column="a_updated_at"/>
+        </collection>
+    </resultMap>
+
+    <!-- 总数查询 -->
+    <select id="countQuestions" resultType="long">
+        SELECT COUNT(*) FROM skill_question
+    </select>
+
+    <!-- 分页查询（问题 + 回答） -->
+    <select id="selectPagedWithAnswers" resultMap="QuestionWithAnswersMap">
+        SELECT
+	        q.id as q_id,
+	        q.content as q_content,
+	        q.creator_id as q_creator_id,
+	        q.is_resolved as q_is_resolved,
+	        q.created_at as q_created_at,
+            qu.username as q_creator_name,
+	        q.updated_at as q_updated_at,
+	        a.id as a_id,
+	        a.question_id as a_question_id,
+	        a.content as a_content,
+	        a.like_count as a_like_count,
+	        a.creator_id as a_creator_id,
+            au.username as a_creator_name,
+	        a.created_at as a_created_at,
+	        a.updated_at as a_updated_at
+        FROM skill_question q
+	        LEFT JOIN user_login_info qu on q.creator_id = qu.employee_id
+	        LEFT JOIN skill_answer a ON q.id = a.question_id
+	        LEFT JOIN user_login_info au on a.creator_id = au.employee_id
+	        ORDER BY q.created_at DESC, a.created_at ASC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+	
+	<insert id="insert" parameterType="com.jhc.employee_management.entity.SkillAnswer"
+	        useGeneratedKeys="true" keyProperty="id">
+	    INSERT INTO skill_question (content, creator_id, is_resolved, created_at, updated_at)
+	    VALUES (#{content}, #{creatorId}, #{isResolved}, #{createdAt}, #{updatedAt})
+	</insert>
+
+</mapper>

@@ -28,7 +28,8 @@
         id,title,link,creator_id,created_at,updated_at
     </sql>
 
-    <insert id="creatLearning" parameterType="com.jhc.employee_management.entity.LearningResources">
+    <insert id="creatLearning" parameterType="com.jhc.employee_management.entity.LearningResources"
+    	useGeneratedKeys="true" keyProperty="id">
         insert into learning_resources (title,link,creator_id,created_at,updated_at) values (#{title}, #{link}, #{creatorId}, NOW(), NOW())
     </insert>
     <!--0918whm 分页查询 -->
@@ -46,7 +47,7 @@
         LIMIT #{offset}, #{pageSize}
     </select>
     <!-- 0918whm 统计总数 -->
-    <select id="countAll" resultType="int">
+    <select id="countAll" resultType="long">
         SELECT COUNT(*) FROM learning_resources
     </select>
 </mapper>

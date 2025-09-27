@@ -22,7 +22,7 @@ public class LearningResourcesServiceImpl implements LearningResourcesService {
         int offset = (page - 1) * size;
         
         List<LearningResources> items = learningResourcesMapper.selectByPage(offset, size);
-        int totalItems = learningResourcesMapper.countAll();
+        Long totalItems = learningResourcesMapper.countAll();
         
         return new PageResult<>(items, page, size, totalItems);
     }
@@ -37,7 +37,7 @@ public class LearningResourcesServiceImpl implements LearningResourcesService {
     }
     
     @Override
-    public int countAll() {
+    public Long countAll() {
         return learningResourcesMapper.countAll();
     }
 }

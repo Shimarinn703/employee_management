@@ -9,5 +9,5 @@ import com.jhc.employee_management.entity.LearningResources;
 public interface LearningResourcesMapper {
     int creatLearning(LearningResources resource);
     List<LearningResources> selectByPage(@Param("offset") int offset, @Param("pageSize") int pageSize);
-    int countAll();
+    Long countAll();
 }
