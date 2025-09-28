@@ -1,5 +1,7 @@
 package com.jhc.employee_management.security;
 
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,6 +28,9 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Resource
     private TokenBlacklistService tokenBlacklistService;
+
+    @Resource
+    private MessageSource messageSource;
 
     private static final List<String> EXCLUDE_PATHS = Arrays.asList(
             "/auth/login",
@@ -63,17 +68,17 @@ public class JwtFilter extends OncePerRequestFilter {
 
             // 2) 黑名单拦截
             if (tokenBlacklistService.isBlacklisted(jwt)) {
-                writeUnauthorized(response, "ログインが必要です");
+                writeUnauthorized(request, response, "auth.required");
                 return;
             }
 
             try {
                 username = jwtUtil.extractUsername(jwt);
             } catch (io.jsonwebtoken.ExpiredJwtException e) {
-                writeUnauthorized(response, "ログイン情報の有効期限が切れました。再ログインしてください。");
+                writeUnauthorized(request, response, "token.expired");
                 return;
             } catch (Exception e) {
-                writeUnauthorized(response, "トークンが無効です。再ログインしてください。");
+                writeUnauthorized(request, response, "token.invalid");
                 return;
             }
         }
@@ -87,7 +92,7 @@ public class JwtFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             } catch (org.springframework.security.core.userdetails.UsernameNotFoundException e) {
-                writeUnauthorized(response, "ユーザーが存在しません"); // 401 + ApiResponse
+                writeUnauthorized(request, response, "user.notfound");
                 return;
             }
         }
@@ -96,9 +101,10 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     //统一返回401 + ApiResponse
-    private void writeUnauthorized(HttpServletResponse response, String msg) throws IOException {
+    private void writeUnauthorized(HttpServletRequest request, HttpServletResponse response, String key) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        String msg = messageSource.getMessage(key, null, LocaleContextHolder.getLocale());
         com.jhc.employee_management.common.ApiResponse<Object> body =
                 com.jhc.employee_management.common.ApiResponse.error(401, msg);
         response.getWriter().write(new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(body));

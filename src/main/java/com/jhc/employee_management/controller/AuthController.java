@@ -10,6 +10,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import com.jhc.employee_management.security.TokenBlacklistService;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -60,6 +62,9 @@ public class AuthController {
     @Resource
     private TokenBlacklistService tokenBlacklistService;
 
+    @Resource
+    private MessageSource messageSource;
+
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
@@ -93,11 +98,12 @@ public class AuthController {
             result.put("user", userInfo);
 
             log.info("【LOGIN】登录成功，用户名：{}", request.getUsername());
-            return ResponseEntity.ok(ApiResponse.success("ログイン成功", result));
+            String msg = messageSource.getMessage("login.success", null, LocaleContextHolder.getLocale());
+            return ResponseEntity.ok(ApiResponse.success(msg, result));
 
         } catch (BadCredentialsException e) {
             log.warn("【LOGIN】认证失败（用户名或密码错误），用户名：{}", request.getUsername());
-            throw new BusinessException("ユーザー名またはパスワードが正しくありません");
+            throw new BusinessException("error.badCredentials");
         }
     }
 
@@ -108,7 +114,7 @@ public class AuthController {
         log.info("【REGISTER】注册请求：用户名={}", request.getUsername());
         if (userLoginInfoService.getByUsername(request.getUsername()) != null) {
             log.warn("【REGISTER】用户名已存在：{}", request.getUsername());
-            return ResponseEntity.ok(ApiResponse.error(100,"ユーザーが既に存在している"));
+            throw new BusinessException("register.user.exists");
         }
 
         // 保存用户登录信息
@@ -133,7 +139,8 @@ public class AuthController {
         userPermissionsService.save(permissions);
 
         log.info("【REGISTER】注册成功：用户名={}, employeeId={}", request.getUsername(), employeeId);
-        return ResponseEntity.ok(ApiResponse.success("登録成功", null));
+        String msg = messageSource.getMessage("register.success", null, LocaleContextHolder.getLocale());
+        return ResponseEntity.ok(ApiResponse.success(msg, null));
     }
 
     @PostMapping("/logout")
@@ -154,7 +161,8 @@ public class AuthController {
         }
         SecurityContextHolder.clearContext();
         log.info("【LOGOUT】退出成功：用户名={}", username);
-        return ResponseEntity.ok(ApiResponse.success("ログアウト成功", null));
+        String msg = messageSource.getMessage("logout.success", null, LocaleContextHolder.getLocale());
+        return ResponseEntity.ok(ApiResponse.success(msg, null));
     }
    
 }
