@@ -6,6 +6,7 @@
 
     <resultMap id="BaseResultMap" type="com.jhc.employee_management.entity.Department">
             <id property="id" column="id" />
+            <result property="departmentName" column="department_name" />
             <result property="branchId" column="branch_id" />
             <result property="name" column="name" />
             <result property="createdAt" column="created_at" />
@@ -34,7 +35,7 @@
     </select>
     
     <sql id="Base_Column_List">
-        id,branch_id,name,created_at,updated_at,add1,
+        id,department_name,branch_id,name,created_at,updated_at,add1,
         add2,add3
     </sql>
 </mapper>

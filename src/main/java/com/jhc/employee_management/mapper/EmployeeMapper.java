@@ -11,4 +11,16 @@ import com.jhc.employee_management.entity.Employee;
 */
 public interface EmployeeMapper extends BaseMapper<Employee> {
 	Employee selectById(long employeeId);
+	
+	Employee selectEmployeeById(long employeeId);
+	
+	/**
+	 * 複数条件で社員を検索する
+	 */
+	List<Map<String, Object>> searchEmployees(@Param("params") Map<String, Object> params);
+	
+	/**
+	 * 社員IDで社員の詳細情報を取得する
+	 */
+	Map<String, Object> getEmployeeDetail(@Param("id") Long id);
 }

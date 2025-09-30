@@ -27,6 +27,22 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee>
 		
 	}
 	
+	@Override
+	public Employee getbyEmployeeId(long employeeId) {
+		return employeeMapper.selectEmployeeById(employeeId);
+		
+	}
+	
+	@Override
+	public List<Map<String, Object>> searchEmployees(Map<String, Object> params) {
+		return employeeMapper.searchEmployees(params);
+	}
+	
+	@Override
+	public Map<String, Object> getEmployeeDetail(Long id) {
+		return employeeMapper.getEmployeeDetail(id);
+	}
+	
 }
 
 

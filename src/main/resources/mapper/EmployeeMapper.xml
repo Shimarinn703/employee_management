@@ -95,4 +95,23 @@
             WHERE A.id = #{id}
     </select>
     
+    <select id="selectEmployeeById" parameterType="java.lang.Long" resultType="com.jhc.employee_management.entity.Employee">
+        SELECT e.id, e.branch_id, e.department_id, e.name, e.employee_level, e.email, e.phone_no, e.hire_date, e.position, e.employment_type, e.manager_name
+        FROM employee e
+        WHERE e.id = #{employeeId}
+    </select>
+
+    <select id="searchEmployees" parameterType="java.util.Map" resultType="map">
+        SELECT e.id, e.name, e.position, d.department_name as department
+        FROM employee e
+        LEFT JOIN department d ON e.department_id = d.id
+    </select>
+    
+    <select id="getEmployeeDetail" parameterType="java.lang.Long" resultType="map">
+        SELECT e.id, e.name, e.position, d.department_name as department
+        FROM employee e
+        LEFT JOIN department d ON e.department_id = d.id
+        WHERE e.id = #{id}
+    </select>
+    
 </mapper>

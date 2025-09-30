@@ -1,5 +1,8 @@
 package com.jhc.employee_management.service;
 
+import java.util.List;
+import java.util.Map;
+
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jhc.employee_management.entity.Employee;
 
@@ -10,4 +13,14 @@ import com.jhc.employee_management.entity.Employee;
 */
 public interface EmployeeService extends IService<Employee> {
 	Employee getbyEmployeeId(long employeeId);
+	
+	/**
+	 * 複数条件で社員を検索する
+	 */
+	List<Map<String, Object>> searchEmployees(Map<String, Object> params);
+	
+	/**
+	 * 社員IDで社員の詳細情報を取得する
+	 */
+	Map<String, Object> getEmployeeDetail(Long id);
 }
