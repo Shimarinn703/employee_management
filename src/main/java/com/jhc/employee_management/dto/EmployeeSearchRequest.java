@@ -58,4 +58,14 @@ public class EmployeeSearchRequest {
      * 部署
      */
     private String department;
+    
+    /**
+     * ページ番号（デフォルト: 1）
+     */
+    private Integer page;
+    
+    /**
+     * 1ページあたりの件数（デフォルト: 10）
+     */
+    private Integer pageSize;
 }

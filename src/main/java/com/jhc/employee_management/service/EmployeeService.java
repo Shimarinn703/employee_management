@@ -15,9 +15,14 @@ public interface EmployeeService extends IService<Employee> {
 	Employee getbyEmployeeId(long employeeId);
 	
 	/**
-	 * 複数条件で社員を検索する
+	 * 複数条件で社員を検索する（分页）
 	 */
 	List<Map<String, Object>> searchEmployees(Map<String, Object> params);
+	
+	/**
+	 * 検索条件に一致する社員の総数を取得する
+	 */
+	long countEmployees(Map<String, Object> params);
 	
 	/**
 	 * 社員IDで社員の詳細情報を取得する

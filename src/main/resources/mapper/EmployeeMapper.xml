@@ -101,16 +101,52 @@
         WHERE e.id = #{employeeId}
     </select>
 
-    <select id="searchEmployees" parameterType="java.util.Map" resultType="map">
-        SELECT e.id, e.name, e.position, d.department_name as department
+    <select id="countEmployees" parameterType="java.util.Map" resultType="long">
+        SELECT COUNT(*)
         FROM employee e
         LEFT JOIN department d ON e.department_id = d.id
+        WHERE 1=1
+    </select>
+
+    <select id="searchEmployees" parameterType="java.util.Map" resultType="map">
+        SELECT e.id, e.name, e.position, d.name as department
+        FROM employee e
+        LEFT JOIN department d ON e.department_id = d.id
+        WHERE 1=1
+        <if test="offset != null and pageSize != null">
+            LIMIT #{offset}, #{pageSize}
+        </if>
     </select>
     
     <select id="getEmployeeDetail" parameterType="java.lang.Long" resultType="map">
-        SELECT e.id, e.name, e.position, d.department_name as department
+        SELECT 
+            e.id,
+            e.name,
+            e.email,
+            e.phone_no,
+            e.hire_date,
+            e.position,
+            e.employment_type,
+            e.employee_level,
+            e.manager_name,
+            e.emergency_contact,
+            e.emergency_tel,
+            e.slack_id,
+            e.teams_id,
+            e.photo_path,
+            e.self_pr,
+            b.name as branch_name,
+            d.name as department_name,
+            s.birthday,
+            s.gender,
+            s.nationality,
+            s.marital_status,
+            s.address,
+            s.education
         FROM employee e
         LEFT JOIN department d ON e.department_id = d.id
+        LEFT JOIN branch b ON e.branch_id = b.id
+        LEFT JOIN staffbasicinfo s ON e.id = s.employee_id
         WHERE e.id = #{id}
     </select>
     

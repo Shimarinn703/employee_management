@@ -34,12 +34,13 @@
     
     <select id="selectByEmployeeId" parameterType="java.lang.Long" resultMap="selectResultMap">
         SELECT
-          B.id as skill_id,
+          A.skill_id,
           B.name,
-          IFNULL(A.experience_level, 0) as experience_level
-        FROM skill B LEFT JOIN  staffskill A 
-          on B.id =  A.skill_id and A.employee_id = #{employeeId}
-          ORDER BY B.id
+          A.experience_level
+        FROM staffskill A 
+        INNER JOIN skill B ON A.skill_id = B.id
+        WHERE A.employee_id = #{employeeId}
+        ORDER BY A.skill_id
     </select>
     
     <insert id="insert" parameterType="com.jhc.employee_management.entity.StaffSkill" useGeneratedKeys="true" keyProperty="id">

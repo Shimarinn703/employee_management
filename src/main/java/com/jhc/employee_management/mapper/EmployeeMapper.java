@@ -2,6 +2,10 @@ package com.jhc.employee_management.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.jhc.employee_management.entity.Employee;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
 
 /**
 * @author 30839
@@ -15,9 +19,14 @@ public interface EmployeeMapper extends BaseMapper<Employee> {
 	Employee selectEmployeeById(long employeeId);
 	
 	/**
-	 * 複数条件で社員を検索する
+	 * 複数条件で社員を検索する（分页）
 	 */
-	List<Map<String, Object>> searchEmployees(@Param("params") Map<String, Object> params);
+	List<Map<String, Object>> searchEmployees(Map<String, Object> params);
+	
+	/**
+	 * 検索条件に一致する社員の総数を取得する
+	 */
+	long countEmployees(Map<String, Object> params);
 	
 	/**
 	 * 社員IDで社員の詳細情報を取得する
