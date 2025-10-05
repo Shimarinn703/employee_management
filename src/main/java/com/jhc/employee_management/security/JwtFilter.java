@@ -36,8 +36,7 @@ public class JwtFilter extends OncePerRequestFilter {
             "/auth/login",
             "/auth/register",
             "/auth/captcha",
-            "/employee/preview",
-            "/public/",        // 静态资源
+            "/public/",
             "/favicon.ico",
             "/upload/img/upload/",
             "/access/img/upload/"
