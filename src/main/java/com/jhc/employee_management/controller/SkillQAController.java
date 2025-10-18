@@ -34,23 +34,37 @@ public class SkillQAController {
     @Resource
     SkillAnswerService skillAnswerService;
     
-    // GET: 分页获取学习资源 0918whm
+    // GET: 分页获取QA资源 1018whm
     @GetMapping("/show")
     public ResponseEntity<?> getPagedResources(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size) {
     	log.info("Received GET request for skill question - page: {}, size: {}", page, size);
-        PageResult<SkillQuestion> result = skillQAService.getAllQA(page, size);
-        log.debug("Returning {} resources", result.getTotal());
+        
+    	PageResult<SkillQuestion> result = skillQAService.getAllQA(page, size);
+        
+    	log.debug("Returning {} resources", result.getTotal());
         return ResponseEntity.ok(ApiResponse.success("learning Resources情報の取得完了", result));
     }
- // POST: 追加学习资源 0918whm
+ // POST: 追加Question 1018whm
     @Transactional
-    @PostMapping("/add")
+    @PostMapping("/addQuestion")
     public ResponseEntity<?> createQuestion(
             @RequestBody SkillQuestion skillQuestion) {
     	log.info("Received POST request to create skill question: {}", skillQuestion.getCreatorName());
+    	
     	SkillQuestion createdQa = skillQAService.createQuestion(skillQuestion);
+        
+    	return ResponseEntity.ok(ApiResponse.success("Questionの保存完了", createdQa));
+    }
+ // POST: 追加Answer 1018whm
+    @Transactional
+    @PostMapping("/addAnswer")
+    public ResponseEntity<?> createAnswer(
+            @RequestBody SkillQuestion skillQuestion) {
+    	log.info("Received POST request to create skill answer: {}", skillQuestion.getCreatorName());
+    	
+    	SkillQuestion createdQa = (skillQuestion);
     	
     	List<SkillAnswer> listAnswer = createdQa.getAnswers();
     	
@@ -62,6 +76,6 @@ public class SkillQAController {
     	}
     	createdQa.setAnswers(listAnswerNew);
 
-        return ResponseEntity.ok(ApiResponse.success("learning Resourcesの保存完了", createdQa));
-    }
+        return ResponseEntity.ok(ApiResponse.success("lAnswerの保存完了", createdQa));
+    }    
 }
