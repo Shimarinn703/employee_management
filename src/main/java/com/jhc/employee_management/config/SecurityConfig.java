@@ -1,6 +1,5 @@
 package com.jhc.employee_management.config;
 
-
 import javax.annotation.Resource;
 
 import org.springframework.context.annotation.Bean;
@@ -22,59 +21,53 @@ import com.jhc.employee_management.security.JwtAccessDeniedHandler;
 import com.jhc.employee_management.security.JwtAuthenticationEntryPoint;
 import com.jhc.employee_management.security.JwtFilter;
 
-
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true) // 启用方法权限控制
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Resource
-    private JwtFilter jwtFilter;
+    @Resource private JwtFilter jwtFilter;
+    @Resource private CustomUserDetailsService userDetailsService;
+    @Resource private JwtAuthenticationEntryPoint authenticationEntryPoint;
+    @Resource private JwtAccessDeniedHandler accessDeniedHandler;
 
-    @Resource
-    private CustomUserDetailsService userDetailsService;
-
-    @Resource
-    private JwtAuthenticationEntryPoint authenticationEntryPoint;
-
-    @Resource
-    private JwtAccessDeniedHandler accessDeniedHandler;
-
-    // 配置 HTTP 安全策略
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
-                .authorizeRequests()
+            .authorizeRequests()
+                // ★ 开发期放开交流区 API
+                .antMatchers("/api/exchange/**").permitAll()
+                // 交流静态资源放行
+                .antMatchers("/uploads/**").permitAll()
+                .antMatchers("${app.upload.url}**").permitAll()
+                // 已有白名单
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .antMatchers("/auth/login", "/auth/register", "/auth/captcha", "/public/**", "/favicon.ico", "/upload/img/upload/**", "/access/img/upload/**")
-                .permitAll()
+                .antMatchers(
+                    "/auth/login", "/auth/register", "/auth/captcha",
+                    "/public/**", "/favicon.ico",
+                    "/upload/img/upload/**", "/access/img/upload/**"
+                ).permitAll()
+
                 .anyRequest().authenticated()
-                .and()
-                .exceptionHandling()
+            .and()
+            .exceptionHandling()
                 .authenticationEntryPoint(authenticationEntryPoint)
                 .accessDeniedHandler(accessDeniedHandler)
-                .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+            .and()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
-    // 必须重写：用于 AuthController 中进行认证用
-    @Bean
-    @Override
+    @Bean @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
 
-    // 密码加密器（必须和注册/数据库中的加密方式一致）
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    @Bean public PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
 }

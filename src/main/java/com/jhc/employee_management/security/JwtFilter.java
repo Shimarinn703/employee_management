@@ -1,5 +1,15 @@
 package com.jhc.employee_management.security;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -8,38 +18,20 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.annotation.Resource;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    @Resource
-    private JwtUtil jwtUtil;
+    @Resource private JwtUtil jwtUtil;
+    @Resource private CustomUserDetailsService userDetailsService;
+    @Resource private TokenBlacklistService tokenBlacklistService;
+    @Resource private MessageSource messageSource;
 
-    @Resource
-    private CustomUserDetailsService userDetailsService;
-
-    @Resource
-    private TokenBlacklistService tokenBlacklistService;
-
-    @Resource
-    private MessageSource messageSource;
-
-    private static final List<String> EXCLUDE_PATHS = Arrays.asList(
-            "/auth/login",
-            "/auth/register",
-            "/auth/captcha",
-            "/public/",
-            "/favicon.ico",
-            "/upload/img/upload/",
-            "/access/img/upload/"
+    // ★ 白名单前缀（注意：这里是“去掉 context-path 后”的路径）
+    private static final List<String> EXCLUDE_PREFIXES = Arrays.asList(
+            "/auth/", "/public/", "/favicon.ico",
+            "/upload/img/upload/", "/access/img/upload/",
+            "/api/exchange/" ,// 开发期放开交流区
+            "/employee_management/uploads/", "/upload/uploads/", "/access/uploads/","/uploads/"// 交流区图片
     );
 
     @Override
@@ -49,14 +41,15 @@ public class JwtFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
             return;
         }
-        // 1) 放行无需鉴权的路径（适配 contextPath）
+
+        // 例: /employee_management/api/exchange/posts -> 切成 /api/exchange/posts
         String contextPath = request.getContextPath();
-        String path = request.getRequestURI().substring(contextPath.length());
-        for (String p : EXCLUDE_PATHS) {
-            if (path.equals(p) || path.startsWith(p)) {
-                chain.doFilter(request, response);
-                return;
-            }
+        String uri = request.getRequestURI();
+        String path = uri.startsWith(contextPath) ? uri.substring(contextPath.length()) : uri;
+
+        if (isExcluded(path)) {
+            chain.doFilter(request, response);
+            return;
         }
 
         final String authHeader = request.getHeader("Authorization");
@@ -66,12 +59,10 @@ public class JwtFilter extends OncePerRequestFilter {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             jwt = authHeader.substring(7);
 
-            // 2) 黑名单拦截
             if (tokenBlacklistService.isBlacklisted(jwt)) {
                 writeUnauthorized(request, response, "auth.required");
                 return;
             }
-
             try {
                 username = jwtUtil.extractUsername(jwt);
             } catch (io.jsonwebtoken.ExpiredJwtException e) {
@@ -100,7 +91,12 @@ public class JwtFilter extends OncePerRequestFilter {
         chain.doFilter(request, response);
     }
 
-    //统一返回401 + ApiResponse
+    private boolean isExcluded(String path) {
+        if ("/api/exchange".equals(path) || "/api/exchange/".equals(path)) return true;
+        for (String p : EXCLUDE_PREFIXES) if (path.startsWith(p)) return true;
+        return false;
+    }
+
     private void writeUnauthorized(HttpServletRequest request, HttpServletResponse response, String key) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -109,5 +105,4 @@ public class JwtFilter extends OncePerRequestFilter {
                 com.jhc.employee_management.common.ApiResponse.error(401, msg);
         response.getWriter().write(new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(body));
     }
-
 }
